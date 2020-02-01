@@ -10,6 +10,7 @@
     <string name="have_account"> لديك حساب بالفعل؟ تسجيل الدخول</string>
     <string name="register"> تسجيل</string>
     <string name="new_register">تسجيل جديد</string>
+    <string name="test">Test Github rep ^_^</string>
 
 
 </resources>
