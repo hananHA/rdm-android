@@ -2,16 +2,33 @@ package com.example.rdm.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.rdm.R;
+import com.example.rdm.api.User;
+import com.example.rdm.api.UserClient;
+
+import org.json.JSONObject;
+
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 
 public class LoginActivity extends AppCompatActivity {
+
+    public static String token = null;
 
     private Button loginButton;
     private EditText email, password;
@@ -52,36 +69,94 @@ public class LoginActivity extends AppCompatActivity {
                     password.setError("الرجاء كتابة كلمة المرور");
                     password.requestFocus();
                 } else {
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
 
+                    final HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+                    // set your desired log level
+                    logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+                    OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+
+                    httpClient.addInterceptor(logging);
+
+                    //Creating a retrofit object
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl(UserClient.BASE_URL)
+                            //Here we are using the GsonConverterFactory to directly convert json data to object
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .client(httpClient.build())
+                            .build();
+
+                    //creating the api interface
+                    UserClient api = retrofit.create(UserClient.class);
+                    //now making the call object
+                    //Here we are using the api method that we created inside the api interface
+                    //Here the json data is add to a hash map with key data
+                    Call<User> call = api.postLogin(e, p);
+                    call.enqueue(new Callback<User>() {
+                        @Override
+                        public void onResponse(Call<User> call, Response<User> response) {
+                            if (response.isSuccessful()) {
+                                User user = response.body();
+                                token = user.getAccess_token();
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                Toast.makeText(getApplicationContext(), " أهلا بعودتك مرة أخرى ", Toast.LENGTH_LONG).show();
+
+
+                            } else {
+
+                                if (response.code() == 422) {
+
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        String errMsg = jObjError.getString("message");
+                                        if (errMsg.equalsIgnoreCase("The given data was invalid")) {
+                                            Toast.makeText(getApplicationContext(), "الرجاء التأكد من إدخال البيانات المطلوبة بشكل صحيح", Toast.LENGTH_LONG).show();
+
+                                        } else {
+                                            Toast.makeText(getApplicationContext(), errMsg, Toast.LENGTH_LONG).show();
+
+                                        }
+                                    } catch (Exception e) {
+                                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                    }
+
+                                }
+                                if (response.code() == 401) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        String errMsg = jObjError.getString("message");
+                                        if (errMsg.equalsIgnoreCase("Unauthorized")) {
+                                            Toast.makeText(getApplicationContext(), "البريد الإلكتروني أو كلمة المرور غير صحيحة", Toast.LENGTH_LONG).show();
+
+                                        } else {
+                                            Toast.makeText(getApplicationContext(), errMsg, Toast.LENGTH_LONG).show();
+
+                                        }
+                                    } catch (Exception e) {
+                                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                    }
+
+                                }
+                                if (response.code() == 500) {
+                                    Toast.makeText(getApplicationContext(), "المنصة تحت الصيانة ، الرجاء المحاولة لاحقا ", Toast.LENGTH_LONG).show();
+
+
+                                }
+
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<User> call, Throwable t) {
+                            Toast.makeText(getApplicationContext(), "الرجاء التأكد من اتصالك بالإنترنت", Toast.LENGTH_LONG).show();
+
+
+                        }
+                    });
                 }
-
-
             }
-
-            /*
-            // Instantiate the RequestQueue.
-            val queue = Volley.newRequestQueue(this)
-            val url = "http://testtamayoz.tamayyozz.net/api/login"
-
-            // Request a string response from the provided URL.
-            val stringRequest = StringRequest(Request.Method.POST, url,
-                    Response.Listener<String> { response ->
-                            // Display the first 500 characters of the response string.
-                            print("Ok")
-                            print(response.substring(0, 10))
-                    },
-                    Response.ErrorListener { error ->
-
-                    println("Error No")
-                println(error.toString())
-            })
-
-// Add the request to the RequestQueue.
-                    queue.add(stringRequest); */
         });
-
         registerText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,44 +164,5 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
-            /*
-            // Instantiate the RequestQueue.
-            val queue = Volley.newRequestQueue(this)
-            val url = "http://testtamayoz.tamayyozz.net/api/login"
-
-            // Request a string response from the provided URL.
-            val stringRequest = StringRequest(Request.Method.POST, url,
-                    Response.Listener<String> { response ->
-                            // Display the first 500 characters of the response string.
-                            print("Ok")
-                            print(response.substring(0, 10))
-                    },
-                    Response.ErrorListener { error ->
-
-                    println("Error No")
-                println(error.toString())
-            })
-
-// Add the request to the RequestQueue.
-                    queue.add(stringRequest); */
-//
-//        registerText.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-
-/*
-        register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(intent);
-            }
-        });*/
     }
 }
