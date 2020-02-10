@@ -2,6 +2,10 @@ package com.example.rdm.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
+import android.text.method.ReplacementTransformationMethod;
+import android.text.method.SingleLineTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -10,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.text.AllCapsTransformationMethod;
 
 import com.example.rdm.R;
 import com.example.rdm.api.User;
@@ -43,6 +48,10 @@ public class RegisterActivity extends AppCompatActivity {
         password = findViewById(R.id.passwordReg);
         passwordCon = findViewById(R.id.passwordCon);
         loginText = findViewById(R.id.registerText);
+//        password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+
+//        password.setTextColor(this.getResources().getColor(R.color.colorPrimaryDark));
+
 
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
