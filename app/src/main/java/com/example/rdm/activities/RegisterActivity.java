@@ -45,31 +45,22 @@ public class RegisterActivity extends AppCompatActivity {
 
                     passwordCon.setError("الرجاء تأكيد كلمة المرور");
                     passwordCon.requestFocus();
-                    return;
-
-                } else {
-                    if(!p.equals(pc)) {
-                        Toast.makeText(getApplicationContext(),"كلمة المرور غير متطابقة",Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                if (e.isEmpty()) {
+                } else if (e.isEmpty()) {
                     email.setError("الرجاء كتابة البريد الإلكتروني");
                     email.requestFocus();
-                    return;
-                }
-                if (p.isEmpty()) {
+                } else if (p.isEmpty()) {
                     password.setError("الرجاء كتابة كلمة المرور");
                     password.requestFocus();
-                    return;
-                }
-                if (pc.isEmpty()) {
+                } else if (pc.isEmpty()) {
                     passwordCon.setError("الرجاء تأكيد كلمة المرور");
                     passwordCon.requestFocus();
-                    return;
+                } else if (!p.equals(pc)) {
+                    Toast.makeText(getApplicationContext(), "كلمة المرور غير متطابقة", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                    startActivity(intent);
+
                 }
-
-
 
 
             }

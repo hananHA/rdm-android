@@ -15,7 +15,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private Button loginButton;
     private EditText email, password;
-    private TextView register;
+    private TextView registerText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +25,7 @@ public class LoginActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.loginButton);
         email = findViewById(R.id.emailLog);
         password = findViewById(R.id.passwordLog);
-        register = findViewById(R.id.registerText);
+        registerText = findViewById(R.id.registerText);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,23 +39,20 @@ public class LoginActivity extends AppCompatActivity {
 
                     password.setError("الرجاء كتابة كلمة المرور");
                     password.requestFocus();
-                    return;
 
+                } else if (e.isEmpty()) {
+                    email.setError("الرجاء كتابة البريد الإلكتروني");
+                    email.requestFocus();
+                } else if (p.isEmpty()) {
+                    password.setError("الرجاء كتابة كلمة المرور");
+                    password.requestFocus();
                 } else {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
+
                 }
 
-                if (e.isEmpty()) {
-                    email.setError("الرجاء كتابة البريد الإلكتروني");
-                    email.requestFocus();
-                    return;
-                }
-                if (p.isEmpty()) {
-                    password.setError("الرجاء كتابة كلمة المرور");
-                    password.requestFocus();
-                    return;
-                }
+
             }
 
             /*
@@ -79,6 +76,44 @@ public class LoginActivity extends AppCompatActivity {
 // Add the request to the RequestQueue.
                     queue.add(stringRequest); */
         });
+
+        registerText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+            /*
+            // Instantiate the RequestQueue.
+            val queue = Volley.newRequestQueue(this)
+            val url = "http://testtamayoz.tamayyozz.net/api/login"
+
+            // Request a string response from the provided URL.
+            val stringRequest = StringRequest(Request.Method.POST, url,
+                    Response.Listener<String> { response ->
+                            // Display the first 500 characters of the response string.
+                            print("Ok")
+                            print(response.substring(0, 10))
+                    },
+                    Response.ErrorListener { error ->
+
+                    println("Error No")
+                println(error.toString())
+            })
+
+// Add the request to the RequestQueue.
+                    queue.add(stringRequest); */
+//
+//        registerText.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
 /*
         register.setOnClickListener(new View.OnClickListener() {
