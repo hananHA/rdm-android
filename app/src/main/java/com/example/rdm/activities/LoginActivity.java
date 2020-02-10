@@ -16,6 +16,8 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
     private EditText email, password;
     private TextView registerText;
+    String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,9 @@ public class LoginActivity extends AppCompatActivity {
 
                 } else if (e.isEmpty()) {
                     email.setError("الرجاء كتابة البريد الإلكتروني");
+                    email.requestFocus();
+                } else if (!e.matches(emailPattern)) {
+                    email.setError("الرجاء كتابة بريد إلكتروني صحيح");
                     email.requestFocus();
                 } else if (p.isEmpty()) {
                     password.setError("الرجاء كتابة كلمة المرور");
