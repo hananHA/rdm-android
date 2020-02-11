@@ -35,6 +35,7 @@ public class RegisterActivity extends AppCompatActivity {
     private Button registerButton;
     private EditText email, password, passwordCon;
     private TextView loginText;
+    
     String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
 
 
