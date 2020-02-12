@@ -12,4 +12,7 @@
     <string name="new_register">تسجيل جديد</string>
     <string name="rdm">Road Damage Management</string>
     <string name="title_activity_map">Map</string>
+    <string name="account">الحساب</string>
+    <string name="profile">الملف الشخصي</string>
+    <string name="tickets">التذاكر</string>
 </resources>
