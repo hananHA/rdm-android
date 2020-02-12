@@ -1,6 +1,7 @@
 package com.example.rdm.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.rdm.Model.App;
 import com.example.rdm.R;
 import com.example.rdm.api.User;
 import com.example.rdm.api.UserClient;
@@ -28,7 +30,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends AppCompatActivity {
 
-    public static String token = null;
 
     private Button loginButton;
     private EditText email, password;
@@ -51,6 +52,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String e = email.getText().toString().trim();
                 String p = password.getText().toString();
+
 
                 if (e.isEmpty() && p.isEmpty()) {
                     email.setError("الرجاء كتابة البريد الإلكتروني");
@@ -97,7 +99,11 @@ public class LoginActivity extends AppCompatActivity {
                         public void onResponse(Call<User> call, Response<User> response) {
                             if (response.isSuccessful()) {
                                 User user = response.body();
-                                token = user.getAccess_token();
+                                App.token = user.getAccess_token();
+
+                                SharedPreferences.Editor editUserInfo = App.sharedPreferences.edit();
+                                editUserInfo.putString("token", App.token);
+                                editUserInfo.apply();
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 startActivity(intent);
                                 Toast.makeText(getApplicationContext(), " أهلا بعودتك مرة أخرى ", Toast.LENGTH_LONG).show();

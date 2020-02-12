@@ -8,14 +8,19 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.rdm.Model.App;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -32,12 +37,14 @@ import com.google.android.gms.tasks.Task;
 
 import com.example.rdm.R;
 
-public class MainActivity extends AppCompatActivity  implements OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     int PERMISSION_ID = 44;
     FusedLocationProviderClient mFusedLocationClient;
     String lat;
     String lng;
+    private Button logoutButton;
+
     private SupportMapFragment mapFragment;
 
     @Override
@@ -53,6 +60,22 @@ public class MainActivity extends AppCompatActivity  implements OnMapReadyCallba
 
         requestPermissions();
         getLastLocation();
+
+        logoutButton = findViewById(R.id.logoutButton);
+
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences.Editor editUserInfo = App.sharedPreferences.edit();
+                editUserInfo.putString("token", null);
+                editUserInfo.apply();
+
+                Intent mainIntent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(mainIntent);
+                finish();
+            }
+        });
+
 
     }
 
@@ -90,25 +113,25 @@ public class MainActivity extends AppCompatActivity  implements OnMapReadyCallba
     }
 
     @SuppressLint("MissingPermission")
-    private void getLastLocation(){
+    private void getLastLocation() {
         if (checkPermissions()) {
             if (isLocationEnabled()) {
                 mFusedLocationClient.getLastLocation().addOnCompleteListener(
                         new OnCompleteListener<Location>() {
                             @Override
                             public void onComplete(@NonNull Task<Location> task) {
-                                if(task.isSuccessful()) {
+                                if (task.isSuccessful()) {
                                     System.out.println("dfgdfhdfhsfgh");
                                     Location location = task.getResult();
                                     if (location == null) {
                                         requestNewLocationData();
                                     } else {
-                                        lat = location.getLatitude()+"";
-                                        lng = location.getLongitude()+"";
+                                        lat = location.getLatitude() + "";
+                                        lng = location.getLongitude() + "";
                                         System.out.println(lat);
                                         System.out.println(lng);
                                         mapFragment.getMapAsync(MainActivity.this);
-                                   }
+                                    }
 
                                 } else {
                                     System.out.println("000000000000000");
@@ -127,7 +150,7 @@ public class MainActivity extends AppCompatActivity  implements OnMapReadyCallba
     }
 
     @SuppressLint("MissingPermission")
-    private void requestNewLocationData(){
+    private void requestNewLocationData() {
 
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -146,8 +169,8 @@ public class MainActivity extends AppCompatActivity  implements OnMapReadyCallba
         @Override
         public void onLocationResult(LocationResult locationResult) {
             Location mLastLocation = locationResult.getLastLocation();
-            lat = mLastLocation.getLatitude()+"";
-            lng = mLastLocation.getLongitude()+"";
+            lat = mLastLocation.getLatitude() + "";
+            lng = mLastLocation.getLongitude() + "";
         }
     };
 

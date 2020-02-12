@@ -1,6 +1,7 @@
 package com.example.rdm.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.text.AllCapsTransformationMethod;
 
+import com.example.rdm.Model.App;
 import com.example.rdm.R;
 import com.example.rdm.api.User;
 import com.example.rdm.api.UserClient;
@@ -35,7 +37,7 @@ public class RegisterActivity extends AppCompatActivity {
     private Button registerButton;
     private EditText email, password, passwordCon;
     private TextView loginText;
-    
+
     String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
 
 
@@ -49,6 +51,7 @@ public class RegisterActivity extends AppCompatActivity {
         password = findViewById(R.id.passwordReg);
         passwordCon = findViewById(R.id.passwordCon);
         loginText = findViewById(R.id.registerText);
+
 //        password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
 
 //        password.setTextColor(this.getResources().getColor(R.color.colorPrimaryDark));
@@ -112,7 +115,11 @@ public class RegisterActivity extends AppCompatActivity {
                         public void onResponse(Call<User> call, Response<User> response) {
                             if (response.isSuccessful()) {
                                 User user = response.body();
-                                LoginActivity.token = user.getAccess_token();
+                                App.token = user.getAccess_token();
+
+                                SharedPreferences.Editor editUserInfo = App.sharedPreferences.edit();
+                                editUserInfo.putString("token", App.token);
+                                editUserInfo.apply();
                                 Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                                 startActivity(intent);
                                 Toast.makeText(getApplicationContext(), " تم تسجيلك بنجاح ", Toast.LENGTH_LONG).show();
