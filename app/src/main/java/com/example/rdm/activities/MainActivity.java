@@ -41,9 +41,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     int PERMISSION_ID = 44;
     FusedLocationProviderClient mFusedLocationClient;
-    String lat;
-    String lng;
-    private Button logoutButton;
+    public static String lat;
+    public static String lng;
+    private Button logoutButton, addTicketButton;
 
     private SupportMapFragment mapFragment;
 
@@ -62,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         getLastLocation();
 
         logoutButton = findViewById(R.id.logoutButton);
+        addTicketButton = findViewById(R.id.addTicket);
+
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,6 +73,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 editUserInfo.apply();
 
                 Intent mainIntent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(mainIntent);
+                finish();
+            }
+        });
+
+
+        addTicketButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent mainIntent = new Intent(MainActivity.this, AddTicketActivity.class);
                 startActivity(mainIntent);
                 finish();
             }
