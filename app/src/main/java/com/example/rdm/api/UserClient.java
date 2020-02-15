@@ -3,13 +3,16 @@ package com.example.rdm.api;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Headers;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 
 public interface UserClient {
 
@@ -29,7 +32,6 @@ public interface UserClient {
     })
     @POST("register")
     Call<User> postRegister(@Field("email") String email, @Field("password") String password, @Field("password_confirmation") String password_confirmation);
-
 
 }
 
