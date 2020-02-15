@@ -90,6 +90,7 @@
         android:layout_height="wrap_content"
         android:autofillHints="@string/password"
         android:ems="10"
+        android:fontFamily="@font/ar"
         android:gravity="right"
         android:hint="@string/password"
         android:inputType="textPassword"

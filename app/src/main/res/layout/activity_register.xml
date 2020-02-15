@@ -75,6 +75,7 @@
         android:autofillHints="@string/password"
         android:ems="10"
         android:gravity="right"
+        android:fontFamily="@font/ar"
         android:hint="@string/password"
         android:inputType="textPassword"
         app:layout_constraintBottom_toTopOf="@+id/passwordCon"
@@ -92,6 +93,8 @@
         android:ems="10"
         android:gravity="right"
         android:hint="@string/password_confirmation"
+        android:fontFamily="@font/ar"
+
         android:inputType="textPassword"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
