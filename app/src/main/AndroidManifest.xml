@@ -36,7 +36,6 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name=".activities.AddTicketActivity" />
         <activity android:name=".activities.ticketList" />
 
         <meta-data
