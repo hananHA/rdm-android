@@ -17,7 +17,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+
         <activity android:name=".activities.ForgetPass"></activity>
+
+        <activity android:name=".activities.HintScreen"></activity>
+
 
         <provider
             android:name="androidx.core.content.FileProvider"

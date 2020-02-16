@@ -1,6 +1,7 @@
 package com.example.rdm.activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -10,14 +11,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.rdm.Model.App;
@@ -46,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button logoutButton, addTicketButton;
 
     private SupportMapFragment mapFragment;
+    private RelativeLayout hintLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +93,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Intent mainIntent = new Intent(MainActivity.this, AddTicketActivity.class);
                 startActivity(mainIntent);
                 finish();
+            }
+        });
+
+        hintLayout = findViewById(R.id.hint);
+        hintLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                hintLayout.setVisibility(View.GONE);
             }
         });
 
@@ -187,16 +202,50 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     };
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onMapReady(GoogleMap googleMap) {
         // Add a marker in Sydney, Australia,
         // and move the map's camera to the same location.
         //LatLng sydney = new LatLng(-33.852, 151.211);
         System.out.println("im here");
-        googleMap.setMinZoomPreference(18);
+        googleMap.setMyLocationEnabled(true);
+        googleMap.setMinZoomPreference(14);
         LatLng current = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
-        googleMap.addMarker(new MarkerOptions().position(current)
-                .title("Marker in Sydney"));
+
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        LatLng myPosition;
+        // Creating a criteria object to retrieve provider
+        Criteria criteria = new Criteria();
+
+        // Getting the name of the best provider
+        String provider = locationManager.getBestProvider(criteria, true);
+
+        // Getting Current Location
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    Activity#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for Activity#requestPermissions for more details.
+            return;
+        }
+        Location location = locationManager.getLastKnownLocation(provider);
+
+        if (location != null) {
+            // Getting latitude of the current location
+            double latitude = location.getLatitude();
+
+            // Getting longitude of the current location
+            double longitude = location.getLongitude();
+
+            myPosition = new LatLng(latitude, longitude);
+
+        //googleMap.addMarker(new MarkerOptions().position(current)
+          //      .title("Marker in Sydney"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(current));
         System.out.println(lat);
         System.out.println(lng);
