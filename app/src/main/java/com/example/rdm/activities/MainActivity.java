@@ -1,8 +1,8 @@
 package com.example.rdm.activities;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
@@ -11,17 +11,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -45,8 +45,11 @@ import com.example.rdm.R;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    int PERMISSION_ID = 44;
-    FusedLocationProviderClient mFusedLocationClient;
+    private boolean opened;
+    private ConstraintLayout addTicketCard;
+
+    private int PERMISSION_ID = 44;
+    private FusedLocationProviderClient mFusedLocationClient;
     public static String lat;
     public static String lng;
     private Button logoutButton, addTicketButton;
@@ -54,13 +57,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private SupportMapFragment mapFragment;
     private RelativeLayout hintLayout;
 
+    private View mapView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        addTicketCard = findViewById(R.id.view);
+        addTicketCard.setVisibility(View.INVISIBLE);
+
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
+        mapView = mapFragment.getView();
         //mapFragment.getMapAsync(this);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -89,10 +98,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         addTicketButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                Intent mainIntent = new Intent(MainActivity.this, AddTicketActivity.class);
-                startActivity(mainIntent);
-                finish();
+                if(!opened){
+                    addTicketCard.setVisibility(View.VISIBLE);
+                    TranslateAnimation animate = new TranslateAnimation(
+                            0,
+                            0,
+                            addTicketCard.getHeight(),
+                            0);
+                    animate.setDuration(500);
+                    animate.setFillAfter(true);
+                    addTicketCard.startAnimation(animate);
+                    addTicketButton.setVisibility(View.INVISIBLE);
+                    opened = !opened;
+                }
             }
         });
 
@@ -103,8 +121,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 hintLayout.setVisibility(View.GONE);
             }
         });
-
-
     }
 
     private boolean checkPermissions() {
@@ -149,15 +165,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             @Override
                             public void onComplete(@NonNull Task<Location> task) {
                                 if (task.isSuccessful()) {
-                                    System.out.println("dfgdfhdfhsfgh");
                                     Location location = task.getResult();
                                     if (location == null) {
                                         requestNewLocationData();
                                     } else {
                                         lat = location.getLatitude() + "";
                                         lng = location.getLongitude() + "";
-                                        System.out.println(lat);
-                                        System.out.println(lng);
                                         mapFragment.getMapAsync(MainActivity.this);
                                     }
 
@@ -179,7 +192,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @SuppressLint("MissingPermission")
     private void requestNewLocationData() {
-
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(0);
@@ -202,51 +214,42 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     };
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        // Add a marker in Sydney, Australia,
-        // and move the map's camera to the same location.
-        //LatLng sydney = new LatLng(-33.852, 151.211);
         System.out.println("im here");
         googleMap.setMyLocationEnabled(true);
         googleMap.setMinZoomPreference(14);
         LatLng current = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
-
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        LatLng myPosition;
-        // Creating a criteria object to retrieve provider
-        Criteria criteria = new Criteria();
-
-        // Getting the name of the best provider
-        String provider = locationManager.getBestProvider(criteria, true);
-
-        // Getting Current Location
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    Activity#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for Activity#requestPermissions for more details.
-            return;
-        }
-        Location location = locationManager.getLastKnownLocation(provider);
-
-        if (location != null) {
-            // Getting latitude of the current location
-            double latitude = location.getLatitude();
-
-            // Getting longitude of the current location
-            double longitude = location.getLongitude();
-
-            myPosition = new LatLng(latitude, longitude);
-
-        //googleMap.addMarker(new MarkerOptions().position(current)
-          //      .title("Marker in Sydney"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(current));
+
+        if (mapView != null &&
+                mapView.findViewById(Integer.parseInt("1")) != null) {
+            View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
+            // and next place it, on bottom right (as Google Maps app)
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)
+                    locationButton.getLayoutParams();
+
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+            layoutParams.setMargins(0, 0, 0, 250);
+        }
+
+        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                addTicketCard.setVisibility(View.INVISIBLE);
+                TranslateAnimation animate = new TranslateAnimation(
+                        0,
+                        0,
+                        0,
+                        addTicketCard.getHeight());
+                animate.setDuration(500);
+                animate.setFillAfter(true);
+                addTicketCard.startAnimation(animate);
+                addTicketButton.setVisibility(View.VISIBLE);
+                opened = !opened;
+            }
+        });
         System.out.println(lat);
         System.out.println(lng);
     }

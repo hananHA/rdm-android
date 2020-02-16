@@ -185,7 +185,6 @@ public class AddTicketActivity extends AppCompatActivity {
 
         description = findViewById(R.id.description);
         sendTicket = findViewById(R.id.sendTicket);
-//        photoTest = findViewById(R.id.photoTest);
 
 
         sendTicket.setOnClickListener(new View.OnClickListener() {
