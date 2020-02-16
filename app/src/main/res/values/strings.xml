@@ -15,9 +15,13 @@
     <string name="account">الحساب</string>
     <string name="profile">الملف الشخصي</string>
     <string name="tickets">التذاكر</string>
+    <string name="forget_pass">استعادة كلمة المرور</string>
+    <string name="forget">استعادة</string>
+
     <string name="con_loc">اعتماد الموقع</string>
     <string name="hint_screen">تلميحات الاستخدم</string>
     <string name="hint_profile">الملف الشخصي</string>
     <string name="hint_locate">تحديد الموقع بدقة</string>
     <string name="hint_ticket">اعتماد الموقع والمتابعة للتذكرة</string>
+
 </resources>

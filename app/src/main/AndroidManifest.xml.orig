@@ -17,13 +17,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-
-
+<<<<<<< HEAD
+=======
 
         <activity android:name=".activities.ForgetPass"></activity>
 
-
-
+        <activity android:name=".activities.HintScreen"></activity>
+>>>>>>> a9631f789b581bcb22a9aca88159d7fa9ae9d192
 
 
         <provider
