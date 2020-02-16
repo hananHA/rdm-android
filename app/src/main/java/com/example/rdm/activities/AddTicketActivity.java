@@ -28,8 +28,10 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -45,22 +47,28 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AddTicketActivity extends AppCompatActivity {
 
-    private ImageView photo1, photoTest;
+    private ImageView photo0, photo1, photo2, photo3; //photoTest
     private EditText description;
     private Button sendTicket;
     private Uri photoURI;
     private Bitmap bitmap;
-    static final int REQUEST_IMAGE_CAPTURE = 1;
     private File photoFile = null;
+    private int countPhoto = 0;
+    private int photoNumber = -1;
+    private boolean canSend = false;
+
+    ArrayList<String> filePaths = new ArrayList<>();
+
 
     String mCurrentPhotoPath;
     static final int REQUEST_TAKE_PHOTO = 1;
 
 
     private File createImageFile() throws IOException {
+
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
+        String imageFileName = timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
@@ -70,8 +78,10 @@ public class AddTicketActivity extends AppCompatActivity {
 
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = image.getAbsolutePath();
+        filePaths.add(mCurrentPhotoPath);
         return image;
     }
+
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -120,11 +130,30 @@ public class AddTicketActivity extends AppCompatActivity {
 
             try {
 
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), photoURI);
-//               bitmap = (Bitmap) data.getExtras().get("data");
 
-                photo1.setImageBitmap(bitmap);
-                photoTest.setImageBitmap(bitmap);
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), photoURI);
+                switch (photoNumber) {
+                    case 0:
+                        photo0.setImageBitmap(bitmap);
+                        break;
+                    case 1:
+                        photo1.setImageBitmap(bitmap);
+                        break;
+                    case 2:
+                        photo2.setImageBitmap(bitmap);
+                        break;
+                    case 3:
+                        photo3.setImageBitmap(bitmap);
+                        break;
+
+                    default:
+                        Toast.makeText(getApplicationContext(), "الرجاء المحاولة مرة أخرى", Toast.LENGTH_LONG).show();
+
+
+                }
+
+//                photoTest.setImageBitmap(bitmap);
+                canSend = true;
 
             } catch (Exception e) {
                 Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
@@ -132,7 +161,7 @@ public class AddTicketActivity extends AppCompatActivity {
             }
 
 
-//            photo1.setImageBitmap((Bitmap) data.getExtras().get("data"));
+//            photo0.setImageBitmap((Bitmap) data.getExtras().get("data"));
 
 
             Toast.makeText(getApplicationContext(), mCurrentPhotoPath, Toast.LENGTH_LONG).show();
@@ -149,16 +178,23 @@ public class AddTicketActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_ticket);
 
+        photo0 = findViewById(R.id.photo0);
         photo1 = findViewById(R.id.photo1);
+        photo2 = findViewById(R.id.photo2);
+        photo3 = findViewById(R.id.photo3);
+
         description = findViewById(R.id.description);
         sendTicket = findViewById(R.id.sendTicket);
-        photoTest = findViewById(R.id.photoTest);
+//        photoTest = findViewById(R.id.photoTest);
 
 
         sendTicket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String desc = description.getText().toString();
+                if (!canSend) {
+                    Toast.makeText(getApplicationContext(), "الرجاء رفع صورة واحدة على الأقل !", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 double latitude = 0.0;
                 double longitude = 0.0;
 
@@ -170,12 +206,16 @@ public class AddTicketActivity extends AppCompatActivity {
 
                 int city = 6; // city_id for makkah is 6 in db;
                 int neighborhood = 3424; // neighborhood_id for alzaher - makkah (just test);
-
+//
                 final HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
                 // set your desired log level
                 logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
                 OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+                httpClient.connectTimeout(5, TimeUnit.MINUTES) // connect timeout
+                        .writeTimeout(5, TimeUnit.MINUTES) // write timeout
+                        .readTimeout(5, TimeUnit.MINUTES); // read timeout
+
 
                 httpClient.addInterceptor(logging);
 
@@ -187,18 +227,36 @@ public class AddTicketActivity extends AppCompatActivity {
                         .client(httpClient.build())
                         .build();
 
+                MultipartBody.Builder builder = new MultipartBody.Builder();
 
-                //creating the api interface
+                builder.setType(MultipartBody.FORM);
+
+                for (int i = 0; i < filePaths.size(); i++) {
+                    File photo = new File(filePaths.get(i));
+                    builder.addFormDataPart("photos[" + i + "]", "photos[" + i + "].jpg", RequestBody.create(MediaType.parse("multipart/form-data"), photo));
+
+                }
+
+                builder.addFormDataPart("latitude", String.valueOf(latitude));
+                builder.addFormDataPart("longitude", String.valueOf(longitude));
+                builder.addFormDataPart("city", String.valueOf(city));
+                builder.addFormDataPart("neighborhood", String.valueOf(neighborhood));
+                if (!description.getText().toString().trim().isEmpty()) {
+                    builder.addFormDataPart("description", description.getText().toString());
+                }
+
+                MultipartBody requestBody = builder.build();
+
+
+//                creating the api interface
                 TicketClient api = retrofit.create(TicketClient.class);
 
-                File file = new File(mCurrentPhotoPath);
+//////////////hii emad hi emad h
+//                RequestBody fbody = RequestBody.create(MediaType.parse("multipart/form-data"), photoFile);
+                MultipartBody.Part filePart = MultipartBody.Part.createFormData("photos[0]", "photos[" + countPhoto + "].jpg", RequestBody.create(MediaType.parse("multipart/form-data"), photoFile));
 
-                RequestBody fbody = RequestBody.create(MediaType.parse("multipart/form-data"), photoFile);
-                MultipartBody.Part filePart = MultipartBody.Part.createFormData("photos[0]", "test.jpg", RequestBody.create(MediaType.parse("multipart/form-data"), photoFile));
 
-
-                Call<ResponseBody> call = api.addTicket(latitude, longitude, city, neighborhood, filePart, "Bearer " + App.token);
-//                Call<ResponseBody> call = api.addTicket(file, "djowsj");
+                Call<ResponseBody> call = api.addTicket(requestBody, "Bearer " + App.token);
 
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
@@ -272,13 +330,41 @@ public class AddTicketActivity extends AppCompatActivity {
         });
 
 
+        photo0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                photoNumber = 0;
+                dispatchTakePictureIntent();
+
+            }
+        });
+
+
         photo1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                photoNumber = 1;
                 dispatchTakePictureIntent();
-//                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                startActivityForResult(intent, 100);
 
+            }
+        });
+
+
+        photo2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                photoNumber = 2;
+                dispatchTakePictureIntent();
+
+            }
+        });
+
+
+        photo3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                photoNumber = 3;
+                dispatchTakePictureIntent();
 
             }
         });
