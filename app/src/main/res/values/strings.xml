@@ -15,4 +15,6 @@
     <string name="account">الحساب</string>
     <string name="profile">الملف الشخصي</string>
     <string name="tickets">التذاكر</string>
+    <string name="forget_pass">استعادة كلمة المرور</string>
+    <string name="forget">استعادة</string>
 </resources>
