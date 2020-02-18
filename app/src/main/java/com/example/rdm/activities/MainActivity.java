@@ -23,6 +23,10 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.rdm.Model.App;
+import com.example.rdm.api.Neighborhoods;
+import com.example.rdm.api.NeighborhoodsResponse;
+import com.example.rdm.api.User;
+import com.google.android.gms.common.api.DataBufferResponse;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -61,7 +65,10 @@ import com.example.rdm.BuildConfig;
 import com.example.rdm.Model.App;
 import com.example.rdm.R;
 import com.example.rdm.api.TicketClient;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -69,6 +76,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -101,14 +109,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private int photoNumber = -1;
     private boolean canSend = false;
     ArrayList<String> filePaths = new ArrayList<>();
+
     String mCurrentPhotoPath;
     static final int REQUEST_TAKE_PHOTO = 1;
     private ImageView photo0, photo1, photo2, photo3;
     private EditText description;
+    double latitude = 0.0;
+    double longitude = 0.0;
+    int city = 6; // city_id for makkah is 6 in db;
+    int neighborhood = 3424; // neighborhood_id for alzaher - makkah (just test);
+    public String resNe = null;
 
 
     private SupportMapFragment mapFragment;
     private RelativeLayout hintLayout;
+
 
     private View mapView;
 
@@ -140,6 +155,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         photo3 = findViewById(R.id.photo3);
         sendTicket = findViewById(R.id.sendTicket);
         description = findViewById(R.id.description);
+        getNeighborhoods();
+
+        try {
+
+            JSONObject obj = new JSONObject(resNe);
+
+            Log.d("My App", "Hello : " + obj.toString());
+
+        } catch (Throwable t) {
+            Log.d("My App", "Could not parse malformed JSON: \"" + resNe + "\"");
+        }
 
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
@@ -184,129 +210,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     return;
                 }
 
-                double latitude = 0.0;
-                double longitude = 0.0;
 
                 if (MainActivity.lat != null && MainActivity.lng != null) {
                     latitude = Double.parseDouble(MainActivity.lat);
                     longitude = Double.parseDouble(MainActivity.lng);
                 }
 
-                int city = 6; // city_id for makkah is 6 in db;
-                int neighborhood = 3424; // neighborhood_id for alzaher - makkah (just test);
 
-                final HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-                // set your desired log level
-                logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-                OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-                httpClient.connectTimeout(5, TimeUnit.MINUTES) // connect timeout
-                        .writeTimeout(5, TimeUnit.MINUTES) // write timeout
-                        .readTimeout(5, TimeUnit.MINUTES); // read timeout
-
-
-                httpClient.addInterceptor(logging);
-
-                //Creating a retrofit object
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(TicketClient.BASE_URL)
-                        //Here we are using the GsonConverterFactory to directly convert json data to object
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .client(httpClient.build())
-                        .build();
-
-                MultipartBody.Builder builder = new MultipartBody.Builder();
-
-                builder.setType(MultipartBody.FORM);
-
-                for (int i = 0; i < filePaths.size(); i++) {
-                    File photo = new File(filePaths.get(i));
-                    builder.addFormDataPart("photos[" + i + "]", "photos[" + i + "].jpg", RequestBody.create(MediaType.parse("multipart/form-data"), photo));
-
-                }
-                builder.addFormDataPart("latitude", String.valueOf(latitude));
-                builder.addFormDataPart("longitude", String.valueOf(longitude));
-                builder.addFormDataPart("city", String.valueOf(city));
-                builder.addFormDataPart("neighborhood", String.valueOf(neighborhood));
-                if (!description.getText().toString().trim().isEmpty()) {
-                    builder.addFormDataPart("description", description.getText().toString());
-                }
-
-                MultipartBody requestBody = builder.build();
-
-
-//                creating the api interface
-                TicketClient api = retrofit.create(TicketClient.class);
-
-                Call<ResponseBody> call = api.addTicket(requestBody, "Bearer " + App.token);
-
-                call.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response.isSuccessful()) {
-//                            JSONObject res = new JSONObject(response.body().to());
-
-//                            String message = response.body().toString();
-                            Toast.makeText(getApplicationContext(), "تمت إضافة التذكرة بنجاح !", Toast.LENGTH_LONG).show();
-
-
-                        } else {
-
-                            if (response.code() == 422) {
-
-                                try {
-                                    JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                    String errMsg = jObjError.getString("message");
-
-                                    String tryError = jObjError.getString("errors");
-                                    if (errMsg.equalsIgnoreCase("The given data was invalid.")) {
-                                        Toast.makeText(getApplicationContext(), jObjError.toString(), Toast.LENGTH_LONG).show();
-
-//                                        Toast.makeText(getApplicationContext(), tryError, Toast.LENGTH_LONG).show();
-
-//                                        Toast.makeText(getApplicationContext(), "الرجاء التأكد من إدخال البيانات المطلوبة بشكل صحيح", Toast.LENGTH_LONG).show();
-
-                                    } else {
-                                        Toast.makeText(getApplicationContext(), errMsg, Toast.LENGTH_LONG).show();
-
-                                    }
-                                } catch (Exception e) {
-                                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                                }
-
-                            }
-                            if (response.code() == 401) {
-                                try {
-                                    JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                    String errMsg = jObjError.getString("message");
-                                    if (errMsg.equalsIgnoreCase("Unauthorized")) {
-                                        Toast.makeText(getApplicationContext(), "البريد الإلكتروني أو كلمة المرور غير صحيحة", Toast.LENGTH_LONG).show();
-
-                                    } else {
-                                        Toast.makeText(getApplicationContext(), errMsg, Toast.LENGTH_LONG).show();
-
-                                    }
-                                } catch (Exception e) {
-                                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                                }
-
-                            }
-                            if (response.code() == 500) {
-                                Toast.makeText(getApplicationContext(), "المنصة تحت الصيانة ، الرجاء المحاولة لاحقا ", Toast.LENGTH_LONG).show();
-
-
-                            }
-
-                        }
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-
-                    }
-                });
+                sendRequest();
 
 
             }
@@ -544,6 +455,109 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    public void sendRequest() {
+        //Creating a retrofit object
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(TicketClient.BASE_URL)
+                //Here we are using the GsonConverterFactory to directly convert json data to object
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(App.okHttpClientCall().build())
+                .build();
+
+        MultipartBody.Builder builder = new MultipartBody.Builder();
+
+        builder.setType(MultipartBody.FORM);
+
+        for (int i = 0; i < filePaths.size(); i++) {
+            File photo = new File(filePaths.get(i));
+            builder.addFormDataPart("photos[" + i + "]", "photos[" + i + "].jpg", RequestBody.create(MediaType.parse("multipart/form-data"), photo));
+
+        }
+        builder.addFormDataPart("latitude", String.valueOf(latitude));
+        builder.addFormDataPart("longitude", String.valueOf(longitude));
+        builder.addFormDataPart("city", String.valueOf(city));
+        builder.addFormDataPart("neighborhood", String.valueOf(neighborhood));
+        if (!description.getText().toString().trim().isEmpty()) {
+            builder.addFormDataPart("description", description.getText().toString());
+        }
+
+        MultipartBody requestBody = builder.build();
+
+
+//                creating the api interface
+        TicketClient api = retrofit.create(TicketClient.class);
+
+        Call<ResponseBody> call = api.addTicket(requestBody, "Bearer " + App.token);
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+//                            JSONObject res = new JSONObject(response.body().to());
+
+//                            String message = response.body().toString();
+                    Toast.makeText(getApplicationContext(), "تمت إضافة التذكرة بنجاح !", Toast.LENGTH_LONG).show();
+
+
+                } else {
+
+                    if (response.code() == 422) {
+
+                        try {
+                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                            String errMsg = jObjError.getString("message");
+
+                            String tryError = jObjError.getString("errors");
+                            if (errMsg.equalsIgnoreCase("The given data was invalid.")) {
+                                Toast.makeText(getApplicationContext(), jObjError.toString(), Toast.LENGTH_LONG).show();
+
+//                                        Toast.makeText(getApplicationContext(), tryError, Toast.LENGTH_LONG).show();
+
+//                                        Toast.makeText(getApplicationContext(), "الرجاء التأكد من إدخال البيانات المطلوبة بشكل صحيح", Toast.LENGTH_LONG).show();
+
+                            } else {
+                                Toast.makeText(getApplicationContext(), errMsg, Toast.LENGTH_LONG).show();
+
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+                    if (response.code() == 401) {
+                        try {
+                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                            String errMsg = jObjError.getString("message");
+                            if (errMsg.equalsIgnoreCase("Unauthorized")) {
+                                Toast.makeText(getApplicationContext(), "البريد الإلكتروني أو كلمة المرور غير صحيحة", Toast.LENGTH_LONG).show();
+
+                            } else {
+                                Toast.makeText(getApplicationContext(), errMsg, Toast.LENGTH_LONG).show();
+
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+                    if (response.code() == 500) {
+                        Toast.makeText(getApplicationContext(), "المنصة تحت الصيانة ، الرجاء المحاولة لاحقا ", Toast.LENGTH_LONG).show();
+
+
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+
+            }
+        });
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -597,4 +611,101 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         }
     }
+
+    public void getNeighborhoods() {
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(TicketClient.BASE_URL)
+                //Here we are using the GsonConverterFactory to directly convert json data to object
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(App.okHttpClientCall().build())
+                .build();
+
+        TicketClient api = retrofit.create(TicketClient.class);
+
+        Call<NeighborhoodsResponse> call = api.getNeighborhoods("Bearer " + App.token);
+        call.enqueue(new Callback<NeighborhoodsResponse>() {
+            @Override
+            public void onResponse(Call<NeighborhoodsResponse> call, Response<NeighborhoodsResponse> response) {
+                if (response.isSuccessful()) {
+
+                    try {
+                        NeighborhoodsResponse neighborhoods = response.body();
+                        String helo = neighborhoods.getNeighborhoods().toString();
+                        Log.d("okkk", "isokkkkkk : " + helo);
+                    } catch (Exception e) {
+                        Log.d("okkk", "iserror  : " + e.getMessage());
+
+
+                    }
+
+
+                } else {
+
+                    if (response.code() == 422) {
+                        Log.d("okkk", "iserror 422  : ");
+
+                    }
+
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NeighborhoodsResponse> call, Throwable t) {
+
+            }
+        });
+
+
+//        call.enqueue(new Callback() {
+//            @Override
+//            public void onResponse(Call call, Response response) {
+//                resNe = "Helllllo";
+//                Log.e("TAG", "response 33: " + new Gson().toJson(response.body()));
+//            }
+//
+//            @Override
+//            public void onFailure(Call call, Throwable t) {
+//                Log.e("TAG", "onFailure: " + t.toString());
+//                // Log error here since request failed
+//            }
+//        });
+
+//        call.enqueue(new Callback<ResponseBody>() {
+//            @Override
+//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                try {
+//                    if (response.isSuccessful()) {
+//                        resNe = response.body().string();
+//                        strNe(resNe);
+//
+//
+//                    } else {
+//                        if (response.code() == 422 || response.code() == 500) {
+//                            Toast.makeText(getApplicationContext(), "error code : " + response.code(), Toast.LENGTH_LONG).show();
+//
+//                        }
+//
+//                    }
+//
+//
+//                } catch (Exception e) {
+//                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+//
+//                }
+//
+//            }
+//
+//
+//            @Override
+//            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//
+//            }
+//        });
+
+
+    }
+
+
 }

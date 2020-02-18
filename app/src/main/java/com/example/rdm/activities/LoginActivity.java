@@ -72,20 +72,13 @@ public class LoginActivity extends AppCompatActivity {
                     password.requestFocus();
                 } else {
 
-                    final HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-                    // set your desired log level
-                    logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-                    OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-
-                    httpClient.addInterceptor(logging);
 
                     //Creating a retrofit object
                     Retrofit retrofit = new Retrofit.Builder()
                             .baseUrl(UserClient.BASE_URL)
                             //Here we are using the GsonConverterFactory to directly convert json data to object
                             .addConverterFactory(GsonConverterFactory.create())
-                            .client(httpClient.build())
+                            .client(App.okHttpClientCall().build())
                             .build();
 
                     //creating the api interface
