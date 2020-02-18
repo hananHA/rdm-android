@@ -3,6 +3,7 @@ package com.example.rdm.api;
 import com.google.gson.JsonElement;
 
 import java.io.File;
+import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -65,7 +66,7 @@ public interface TicketClient {
             "Accept: application/json",
 
     })
-    Call<NeighborhoodsResponse> getNeighborhoods(
+    Call<List<Neighborhood>> getNeighborhoods(
             @Header("Authorization") String auth
     );
 

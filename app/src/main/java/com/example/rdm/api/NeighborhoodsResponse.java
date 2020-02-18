@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class NeighborhoodsResponse {
 
+    @SerializedName("neighborhoods")
     private Neighborhoods neighborhoods;
 
     public Neighborhoods getNeighborhoods() {

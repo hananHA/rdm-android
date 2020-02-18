@@ -2,10 +2,7 @@ package com.example.rdm.api;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
-public class Neighborhoods {
-
+public class Neighborhood {
 
     @SerializedName("id")
     private String id;
@@ -19,9 +16,6 @@ public class Neighborhoods {
 
     @SerializedName("city_id")
     private String city_id;
-
-    @SerializedName("neighborhood")
-    private List<Neighborhood> neighborhood;
 
     public String getId() {
         return id;
@@ -54,7 +48,4 @@ public class Neighborhoods {
     public void setCity_id(String city_id) {
         this.city_id = city_id;
     }
-
-
 }
-

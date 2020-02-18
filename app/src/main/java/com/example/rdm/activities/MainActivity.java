@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.rdm.Model.App;
+import com.example.rdm.api.Neighborhood;
 import com.example.rdm.api.Neighborhoods;
 import com.example.rdm.api.NeighborhoodsResponse;
 import com.example.rdm.api.User;
@@ -155,18 +156,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         photo3 = findViewById(R.id.photo3);
         sendTicket = findViewById(R.id.sendTicket);
         description = findViewById(R.id.description);
+
         getNeighborhoods();
-
-        try {
-
-            JSONObject obj = new JSONObject(resNe);
-
-            Log.d("My App", "Hello : " + obj.toString());
-
-        } catch (Throwable t) {
-            Log.d("My App", "Could not parse malformed JSON: \"" + resNe + "\"");
-        }
-
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -623,39 +614,76 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         TicketClient api = retrofit.create(TicketClient.class);
 
-        Call<NeighborhoodsResponse> call = api.getNeighborhoods("Bearer " + App.token);
-        call.enqueue(new Callback<NeighborhoodsResponse>() {
+        Call<List<Neighborhood>> call = api.getNeighborhoods("Bearer " + App.token);
+        call.enqueue(new Callback<List<Neighborhood>>() {
             @Override
-            public void onResponse(Call<NeighborhoodsResponse> call, Response<NeighborhoodsResponse> response) {
-                if (response.isSuccessful()) {
+            public void onResponse(Call<List<Neighborhood>> call, Response<List<Neighborhood>> response) {
+                Toast.makeText(getApplicationContext(), "hi : ", Toast.LENGTH_LONG).show();
 
-                    try {
-                        NeighborhoodsResponse neighborhoods = response.body();
-                        String helo = neighborhoods.getNeighborhoods().toString();
-                        Log.d("okkk", "isokkkkkk : " + helo);
-                    } catch (Exception e) {
-                        Log.d("okkk", "iserror  : " + e.getMessage());
-
-
-                    }
-
-
-                } else {
-
-                    if (response.code() == 422) {
-                        Log.d("okkk", "iserror 422  : ");
-
-                    }
-
-
-                }
             }
 
             @Override
-            public void onFailure(Call<NeighborhoodsResponse> call, Throwable t) {
+            public void onFailure(Call<List<Neighborhood>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "er : " + t.getMessage(), Toast.LENGTH_LONG).show();
 
             }
         });
+//        call.enqueue(new Callback<Neighborhoods>() {
+//            @Override
+//            public void onResponse(Call<Neighborhoods> call, Response<Neighborhoods> response) {
+//                Neighborhoods neighborhoods = response.body();
+//                String helo = neighborhoods.getName_ar();
+//
+//                Toast.makeText(getApplicationContext(), "hi : " + helo, Toast.LENGTH_LONG).show();
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<Neighborhoods> call, Throwable t) {
+//                Toast.makeText(getApplicationContext(), "er : " + t.getMessage(), Toast.LENGTH_LONG).show();
+//
+//            }
+//        });
+//        call.enqueue(new Callback<NeighborhoodsResponse>() {
+//            @Override
+//            public void onResponse(Call<NeighborhoodsResponse> call, Response<NeighborhoodsResponse> response) {
+//                Toast.makeText(getApplicationContext(), "hi : ", Toast.LENGTH_LONG).show();
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<NeighborhoodsResponse> call, Throwable t) {
+//                Toast.makeText(getApplicationContext(), "er : " + t.getMessage(), Toast.LENGTH_LONG).show();
+//
+//            }
+//        });
+//        call.enqueue(new Callback<NeighborhoodsResponse>() {
+//            @Override
+//            public void onResponse(Call<NeighborhoodsResponse> call, Response<NeighborhoodsResponse> response) {
+//                if (response.isSuccessful()) {
+//                    NeighborhoodsResponse neighborhoods = response.body();
+//                    String helo = neighborhoods.getNeighborhoods().toString();
+//                    Toast.makeText(getApplicationContext(), "hi : " + helo, Toast.LENGTH_LONG).show();
+//
+//                    Log.d("okkk", "isokkkkkk : " + helo);
+//
+//
+//                } else {
+//
+//                    if (response.code() == 422) {
+//                        Log.d("okkk", "iserror 422  : ");
+//
+//                    }
+//
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<NeighborhoodsResponse> call, Throwable t) {
+//
+//            }
+//        });
 
 
 //        call.enqueue(new Callback() {
