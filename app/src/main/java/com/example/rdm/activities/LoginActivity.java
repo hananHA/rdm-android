@@ -100,6 +100,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 startActivity(intent);
                                 Toast.makeText(getApplicationContext(), " أهلا بعودتك مرة أخرى ", Toast.LENGTH_LONG).show();
+                                return;
 
 
                             } else {
@@ -156,6 +157,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+
         registerText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -1,5 +1,6 @@
 package com.example.rdm.api;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
 import java.io.File;
@@ -66,9 +67,10 @@ public interface TicketClient {
             "Accept: application/json",
 
     })
-    Call<List<Neighborhood>> getNeighborhoods(
+    Call<JsonArray> getNeighborhoods(
             @Header("Authorization") String auth
     );
+    //JsonArray
 
 }
 
