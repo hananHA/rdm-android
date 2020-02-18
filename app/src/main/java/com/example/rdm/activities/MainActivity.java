@@ -658,6 +658,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         TicketClient api = retrofit.create(TicketClient.class);
 
         Call<JsonArray> call = api.getNeighborhoods("Bearer " + App.token);
+
+
         call.enqueue(new Callback<JsonArray>() {
             @Override
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
