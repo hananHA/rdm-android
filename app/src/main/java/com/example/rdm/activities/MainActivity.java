@@ -134,7 +134,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         description = findViewById(R.id.description);
 
         getNeighborhoods();
-        setNeighborhoods();
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -606,6 +605,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         editUserInfo.putString("neighborhoodsResponse", response.body().toString());
                         editUserInfo.apply();
+                        setNeighborhoods();
+
                     }
                     if (response.code() == 422 || response.code() == 401 || response.code() == 500) {
                         Log.e("error ", "error code is: " + response.code());
