@@ -237,17 +237,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                addTicketCard.setVisibility(View.INVISIBLE);
-                TranslateAnimation animate = new TranslateAnimation(
-                        0,
-                        0,
-                        0,
-                        addTicketCard.getHeight());
-                animate.setDuration(500);
-                animate.setFillAfter(true);
-                addTicketCard.startAnimation(animate);
-                addTicketButton.setVisibility(View.VISIBLE);
-                opened = !opened;
+                if(addTicketCard.getVisibility() == View.VISIBLE) {
+                    addTicketCard.setVisibility(View.INVISIBLE);
+                    TranslateAnimation animate = new TranslateAnimation(
+                            0,
+                            0,
+                            0,
+                            addTicketCard.getHeight());
+                    animate.setDuration(500);
+                    animate.setFillAfter(true);
+                    addTicketCard.startAnimation(animate);
+                    addTicketButton.setVisibility(View.VISIBLE);
+                    opened = !opened;
+                }
+
             }
         });
         System.out.println(lat);
