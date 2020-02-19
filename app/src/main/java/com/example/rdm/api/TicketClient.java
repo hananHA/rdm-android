@@ -1,13 +1,19 @@
 package com.example.rdm.api;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+
 import java.io.File;
+import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
@@ -30,20 +36,41 @@ public interface TicketClient {
 ////    @Header("Authorization") String authHeader
 //
 //
+//    @POST("create")
+//    @Multipart
+//    @Headers({
+//            "Accept: application/json",
+//    })
+//    Call<ResponseBody> addTicket(@Part("latitude") double latitude,
+//                                 @Part("longitude") double longitude,
+//                                 @Part("city") int city,
+//                                 @Part("neighborhood") int neighborhood,
+//                                 @Part MultipartBody.Part[] filePart,
+//                                 @Header("Authorization") String auth,
+//                                 @Part("description") String description
+//
+//
+//    );
+
     @POST("create")
-    @Multipart
     @Headers({
             "Accept: application/json",
+
     })
-    Call<ResponseBody> addTicket(@Part("latitude") double latitude,
-                                 @Part("longitude") double longitude,
-                                 @Part("city") int city,
-                                 @Part("neighborhood") int neighborhood,
-                                 @Part MultipartBody.Part filePart,
-                                 @Header("Authorization") String auth
-
-
+    Call<ResponseBody> addTicket(
+            @Body RequestBody body,
+            @Header("Authorization") String auth
     );
+
+    @GET("neighborhoods")
+    @Headers({
+            "Accept: application/json",
+
+    })
+    Call<JsonArray> getNeighborhoods(
+            @Header("Authorization") String auth
+    );
+    //JsonArray
 
 }
 
