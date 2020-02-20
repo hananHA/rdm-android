@@ -25,7 +25,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.rdm.Model.App;
-import com.example.rdm.api.Neighborhood;
+import com.example.rdm.Model.Neighborhood;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     String mCurrentPhotoPath;
     static final int REQUEST_TAKE_PHOTO = 1;
-    private ImageView photo0, photo1, photo2, photo3;
+    private ImageView photo0, photo1, photo2, photo3, profile_image;
     private EditText description;
     double latitude = 0.0;
     double longitude = 0.0;
@@ -141,8 +141,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         photo3 = findViewById(R.id.photo3);
         sendTicket = findViewById(R.id.sendTicket);
         description = findViewById(R.id.description);
+        profile_image = findViewById(R.id.profile_image);
 
         getNeighborhoods();
+        profile_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                Intent mainIntent = new Intent(MainActivity.this, TicketListActivity.class);
+                startActivity(mainIntent);
+            }
+        });
+
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -654,8 +665,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
                 try {
                     if (response.isSuccessful()) {
-                        String res = response.body().toString();
-                        Log.d("resList", res);
+                        App.listTicketResponse = response.body().toString();
+
+                        Intent intent = new Intent(MainActivity.this, TicketListActivity.class);
+                        startActivity(intent);
+
+
+//                        Log.d("resList", res);
 
                     } else {
                         if (response.code() == 422 || response.code() == 401 || response.code() == 500) {

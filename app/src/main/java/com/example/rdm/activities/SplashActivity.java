@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.rdm.Model.App;
 import com.example.rdm.R;
 import com.example.rdm.api.TicketClient;
+import com.google.gson.JsonArray;
 
 import org.json.JSONObject;
 
@@ -34,13 +35,11 @@ public class SplashActivity extends AppCompatActivity {
         Log.d("User Token: ", "user_token: " + App.token + "Null !");
         App.sharedPreferences = getSharedPreferences("user_info", Context.MODE_PRIVATE);
         App.token = App.sharedPreferences.getString("token", null);
-
         if (App.token != null) {
-            Intent mainIntent = new Intent(SplashActivity.this, MainActivity.class);
-            SplashActivity.this.startActivity(mainIntent);
-            SplashActivity.this.finish();
+            listTicket();
 
         } else {
+
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -48,8 +47,53 @@ public class SplashActivity extends AppCompatActivity {
                     SplashActivity.this.startActivity(mainIntent);
                     SplashActivity.this.finish();
                 }
-            }, 2000);
+            }, 1500);
         }
+
+
+    }
+
+    public void listTicket() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(TicketClient.BASE_URL)
+                //Here we are using the GsonConverterFactory to directly convert json data to object
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(App.okHttpClientCall().build())
+                .build();
+
+        TicketClient api = retrofit.create(TicketClient.class);
+
+        Call<JsonArray> call = api.listTicket("Bearer " + App.token);
+        call.enqueue(new Callback<JsonArray>() {
+            @Override
+            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+                try {
+                    if (response.isSuccessful()) {
+                        App.listTicketResponse = response.body().toString();
+                        Intent mainIntent = new Intent(SplashActivity.this, MainActivity.class);
+                        SplashActivity.this.startActivity(mainIntent);
+                        SplashActivity.this.finish();
+
+
+                    } else {
+                        if (response.code() == 422 || response.code() == 401 || response.code() == 500) {
+                            Log.e("error list ticket ", "error code is: " + response.code());
+
+                        }
+                    }
+
+                } catch (Exception e) {
+                    Log.e("error when list ticket", e.getMessage());
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonArray> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "الرجاء التحقق من اتصالك بالإنترنت والمحاولة لاحقا ", Toast.LENGTH_LONG).show();
+
+            }
+        });
 
 
     }

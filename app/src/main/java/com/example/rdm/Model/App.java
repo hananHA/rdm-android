@@ -1,29 +1,13 @@
 package com.example.rdm.Model;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.widget.Toast;
 
-import com.example.rdm.api.Neighborhood;
-import com.example.rdm.api.TicketClient;
-
-import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class App {
     public static String token = null;
@@ -31,6 +15,7 @@ public class App {
     public static SharedPreferences sharedPreferences;
     public static String resNe = null;
     public static List<Neighborhood> neighborhoodListApp = new ArrayList<>();
+    public static String listTicketResponse = null;
 
 
 

@@ -1,4 +1,4 @@
-package com.example.rdm.api;
+package com.example.rdm.Model;
 
 import com.google.gson.annotations.SerializedName;
 

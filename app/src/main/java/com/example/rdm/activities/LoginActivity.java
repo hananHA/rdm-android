@@ -3,7 +3,6 @@ package com.example.rdm.activities;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,13 +13,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.rdm.Model.App;
 import com.example.rdm.R;
-import com.example.rdm.api.User;
+import com.example.rdm.Model.User;
 import com.example.rdm.api.UserClient;
 
 import org.json.JSONObject;
 
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

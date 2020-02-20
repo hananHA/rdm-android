@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/ticketinfo"
-    tools:context=".activities.ticketList">
+    tools:context=".activities.TicketListActivity">
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/avatarButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@mipmap/user"
@@ -21,7 +21,7 @@
         app:layout_constraintVertical_bias="0.108" />
 
     <Button
-        android:id="@+id/button5"
+        android:id="@+id/profileButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@mipmap/setting"
@@ -79,7 +79,7 @@
         app:layout_constraintVertical_bias="0.237" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/ticketListButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@mipmap/circle"
@@ -92,33 +92,24 @@
         app:layout_constraintVertical_bias="0.114" />
 
     <ScrollView
-        android:id="@+id/scrollView2"
+        android:id="@+id/scrollView"
 
         android:layout_width="434dp"
         android:layout_height="578dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.666"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0">
 
-        android:layout_width="430dp"
-        android:layout_height="446dp"
-        android:layout_marginBottom="80dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="247dp">
-
-
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="84dp" />
-        </LinearLayout>
+        </androidx.recyclerview.widget.RecyclerView>
+
+
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
