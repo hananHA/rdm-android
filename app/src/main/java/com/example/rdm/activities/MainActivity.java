@@ -489,7 +489,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 //                            String message = response.body().toString();
                     Toast.makeText(getApplicationContext(), "تمت إضافة التذكرة بنجاح !", Toast.LENGTH_LONG).show();
-                    listTicket();
+//                    listTicket();
 
 
                 } else {

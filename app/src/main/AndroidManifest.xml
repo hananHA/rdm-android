@@ -17,10 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-
-
-        <activity android:name=".activities.ForgetPass"></activity>
-
+        <activity android:name=".activities.ForgetPass" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
