@@ -13,6 +13,11 @@ public class Neighborhood {
     @SerializedName("name_en")
     private String name_en;
 
+    public Neighborhood(String name_ar, String id) {
+        this.id = id;
+        this.name_ar = name_ar;
+    }
+
 
     @SerializedName("city_id")
     private String city_id;
@@ -48,4 +53,24 @@ public class Neighborhood {
     public void setCity_id(String city_id) {
         this.city_id = city_id;
     }
+
+    //to display object as a string in spinner
+    @Override
+    public String toString() {
+        return name_ar;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Neighborhood) {
+            Neighborhood c = (Neighborhood) obj;
+            if (c.getName_ar().equals(name_ar) && c.getId() == id) return true;
+        }
+
+        return false;
+    }
+
+
 }
+
+

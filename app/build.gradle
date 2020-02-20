@@ -43,5 +43,8 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.0.0'
     implementation 'com.google.android.material:material:1.0.0-alpha3'
 
+    implementation 'com.android.volley:volley:1.1.1'
+
+
 
 }

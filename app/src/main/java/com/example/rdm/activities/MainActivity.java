@@ -1,10 +1,8 @@
 package com.example.rdm.activities;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -18,20 +16,13 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import com.example.rdm.Model.App;
 import com.example.rdm.api.Neighborhood;
-import com.example.rdm.api.Neighborhoods;
-import com.example.rdm.api.NeighborhoodsResponse;
-import com.example.rdm.api.Result;
-import com.example.rdm.api.User;
-import com.google.android.gms.common.api.DataBufferResponse;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -44,42 +35,24 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-
 import com.example.rdm.R;
-
-
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
-
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
-
 import com.example.rdm.BuildConfig;
-import com.example.rdm.Model.App;
-import com.example.rdm.R;
 import com.example.rdm.api.TicketClient;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -89,14 +62,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -107,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private boolean opened;
     private ConstraintLayout addTicketCard;
-
     private int PERMISSION_ID = 44;
     private FusedLocationProviderClient mFusedLocationClient;
     public static String lat;
@@ -115,14 +83,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button logoutButton, addTicketButton, sendTicket;
     private Uri photoURI;
     private Bitmap bitmap;
-    private File photoFile = null;
-    private int countPhoto = 0;
+    private File photoFile;
     private int photoNumber = -1;
     private boolean canSend = false;
     private Spinner spinner;
     ArrayList<String> filePaths = new ArrayList<>();
-    HashMap<Integer, String> spinnerMap = new HashMap<Integer, String>();
-
 
     String mCurrentPhotoPath;
     static final int REQUEST_TAKE_PHOTO = 1;
@@ -131,17 +96,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     double latitude = 0.0;
     double longitude = 0.0;
     int city = 6; // city_id for makkah is 6 in db;
-    int neighborhood = 3424; // neighborhood_id for alzaher - makkah (just test);
-
-
+    String resNeighborhoods;
+    String[] spinnerArray;
+    public static List<Neighborhood> neighborhoodList = new ArrayList<>();
+    HashMap<Integer, String> spinnerMap = new HashMap<Integer, String>();
     private SupportMapFragment mapFragment;
     private RelativeLayout hintLayout;
-
-
     private View mapView;
-
-    private List<Neighborhood> neighborhoodList = new ArrayList<>();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         logoutButton = findViewById(R.id.logoutButton);
         addTicketButton = findViewById(R.id.addTicket);
+        spinner = findViewById(R.id.spinner);
 
         photo0 = findViewById(R.id.photo0);
         photo1 = findViewById(R.id.photo1);
@@ -170,12 +132,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         photo3 = findViewById(R.id.photo3);
         sendTicket = findViewById(R.id.sendTicket);
         description = findViewById(R.id.description);
-        spinner = findViewById(R.id.spinner);
 
         getNeighborhoods();
-
-        Log.d("is good : ", "what:  " + App.test);
-
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,26 +145,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Intent mainIntent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(mainIntent);
                 finish();
-            }
-        });
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                // Get the spinner selected item text
-                String name = spinner.getSelectedItem().toString();
-                String id = spinnerMap.get(spinner.getSelectedItemPosition());
-
-                Toast.makeText(getApplicationContext(), "id: " + id + " , name : " + name, Toast.LENGTH_LONG).show();
-
-
-            }
-
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                Toast.makeText(getApplicationContext(), "No selection", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -442,6 +380,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onResume() {
         super.onResume();
         getLastLocation();
+
     }
 
     private File createImageFile() throws IOException {
@@ -512,7 +451,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         builder.addFormDataPart("latitude", String.valueOf(latitude));
         builder.addFormDataPart("longitude", String.valueOf(longitude));
         builder.addFormDataPart("city", String.valueOf(city));
-        builder.addFormDataPart("neighborhood", String.valueOf(neighborhood));
+        builder.addFormDataPart("neighborhood", String.valueOf(spinnerMap.get(spinner.getSelectedItemPosition())));
         if (!description.getText().toString().trim().isEmpty()) {
             builder.addFormDataPart("description", description.getText().toString());
         }
@@ -574,22 +513,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         } catch (Exception e) {
                             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                         }
-
                     }
                     if (response.code() == 500) {
                         Toast.makeText(getApplicationContext(), "المنصة تحت الصيانة ، الرجاء المحاولة لاحقا ", Toast.LENGTH_LONG).show();
 
-
                     }
-
                 }
-
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-
+                Toast.makeText(getApplicationContext(), "الرجاء التحقق من اتصالك بالإنترنت والمحاولة لاحقا ", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -599,13 +533,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-
-
-//            Uri uri = data.getData();
-//            filePath = data.getData();
-
             try {
-
 
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), photoURI);
                 switch (photoNumber) {
@@ -625,27 +553,32 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     default:
                         Toast.makeText(getApplicationContext(), "الرجاء المحاولة مرة أخرى", Toast.LENGTH_LONG).show();
 
-
                 }
-
-//                photoTest.setImageBitmap(bitmap);
                 canSend = true;
-
             } catch (Exception e) {
                 Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
-
             }
-
-
-//            photo0.setImageBitmap((Bitmap) data.getExtras().get("data"));
-
-
-//            Toast.makeText(getApplicationContext(), mCurrentPhotoPath, Toast.LENGTH_LONG).show();
 
         } else {
             Toast.makeText(getApplicationContext(), "المنصة تحت الصيانة ، الرجاء المحاولة لاحقا ", Toast.LENGTH_LONG).show();
 
         }
+    }
+
+    public void setNeighborhoods() {
+
+        resNeighborhoods = App.sharedPreferences.getString("neighborhoodsResponse", null);
+        Type listType = new TypeToken<List<Neighborhood>>() {
+        }.getType();
+        neighborhoodList = getNeFromJson(resNeighborhoods, listType);
+        spinnerArray = new String[neighborhoodList.size()];
+        for (int i = 0; i < neighborhoodList.size(); i++) {
+            spinnerMap.put(i, neighborhoodList.get(i).getId());
+            spinnerArray[i] = neighborhoodList.get(i).getName_ar();
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, spinnerArray);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
     }
 
     public void getNeighborhoods() {
@@ -667,27 +600,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
                 try {
-                    String nStr = response.body().toString();
-                    Type listType = new TypeToken<List<Neighborhood>>() {
-                    }.getType();
 
-                    neighborhoodList = getTeamListFromJson(nStr, listType);
-                    String[] spinnerArray = new String[neighborhoodList.size()];
+                    if (response.isSuccessful()) {
 
+                        SharedPreferences.Editor editUserInfo = App.sharedPreferences.edit();
+                        Log.d("poblem", response.body().toString());
 
-                    for (int i = 0; i < neighborhoodList.size(); i++) {
-                        spinnerMap.put(i, neighborhoodList.get(i).getCity_id());
-                        spinnerArray[i] = neighborhoodList.get(i).getName_ar();
+                        editUserInfo.putString("neighborhoodsResponse", response.body().toString());
+                        editUserInfo.apply();
+                        setNeighborhoods();
 
-                        Log.e("name:   ", neighborhoodList.get(i).getName_ar() + "id : " + neighborhoodList.get(i).getId());
                     }
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, spinnerArray);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinner.setAdapter(adapter);
+                    if (response.code() == 422 || response.code() == 401 || response.code() == 500) {
+                        Log.e("error ", "error code is: " + response.code());
 
-                    String name = spinner.getSelectedItem().toString();
-                    String id = spinnerMap.get(spinner.getSelectedItemPosition());
-
+                    }
 
                 } catch (Exception e) {
                     Log.e("error when ", e.getMessage());
@@ -696,184 +623,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             @Override
             public void onFailure(Call<JsonArray> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "الرجاء التحقق من اتصالك بالإنترنت والمحاولة لاحقا ", Toast.LENGTH_LONG).show();
 
             }
         });
 
-//        call.enqueue(new Callback<List<Neighborhood>>() {
-//            @Override
-//            public void onResponse(Call<List<Neighborhood>> call, Response<List<Neighborhood>> response) {
-//                try {
-//                    List<Neighborhood> ne = response.body();
-//                    App.neighborhoodListApp = ne;
-//                    Log.e("error when ", "good");
-//
-//
-//                } catch (Exception e) {
-//                    Log.e("error when ", e.getMessage());
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<Neighborhood>> call, Throwable t) {
-//                Log.e("fail! ", "errorrrr " + t.getMessage());
-//
-//
-//            }
-//        });
-
-
-//        call.enqueue(new Callback<ResponseBody>() {
-//            @Override
-//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-//                try {
-//                    if (response.isSuccessful()) {
-//                        App.resNe = response.body().string();
-//                        Log.d("local ", "local work : " + App.resNe);
-//
-//                        try {
-//
-//                            JSONObject obj = new JSONObject(App.resNe);
-//
-//                            Log.d("My App", "Wow : " + obj.toString());
-//
-//
-//                        } catch (Throwable t) {
-//                            Log.e("My App", "Could not parse malformed JSON: \"" + App.resNe + "\"");
-//                        }
-//
-//
-//                    } else {
-//                        if (response.code() == 422 || response.code() == 500) {
-//                            Toast.makeText(getApplicationContext(), "error code : " + response.code(), Toast.LENGTH_LONG).show();
-//
-//                        }
-//
-//                    }
-//
-//
-//                } catch (Exception e) {
-//                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-//
-//                }
-//
-//            }
-//
-//
-//            @Override
-//            public void onFailure(Call<ResponseBody> call, Throwable t) {
-//
-//            }
-//        });
-//        call.enqueue(new Callback<NeighborhoodsResponse>() {
-//            @Override
-//            public void onResponse(Call<NeighborhoodsResponse> call, Response<NeighborhoodsResponse> response) {
-//                Log.d("error", "this is good");
-//
-//                List<Result> results = response.body().getRestResponse().getResult();
-//                Log.d("error", "this is so good");
-//
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<NeighborhoodsResponse> call, Throwable t) {
-//                Log.d("error", "this is error : " + t.getMessage());
-//                Toast.makeText(getApplicationContext(), "er : " + t.getMessage(), Toast.LENGTH_LONG).show();
-//
-//            }
-//        });
-
-//        call.enqueue(new Callback<List<Neighborhood>>() {
-//            @Override
-//            public void onResponse(Call<List<Neighborhood>> call, Response<List<Neighborhood>> response) {
-//                Toast.makeText(getApplicationContext(), "hi : ", Toast.LENGTH_LONG).show();
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<Neighborhood>> call, Throwable t) {
-//                Toast.makeText(getApplicationContext(), "er : " + t.getMessage(), Toast.LENGTH_LONG).show();
-//
-//            }
-//        });
-//        call.enqueue(new Callback<Neighborhoods>() {
-//            @Override
-//            public void onResponse(Call<Neighborhoods> call, Response<Neighborhoods> response) {
-//                Neighborhoods neighborhoods = response.body();
-//                String helo = neighborhoods.getName_ar();
-//
-//                Toast.makeText(getApplicationContext(), "hi : " + helo, Toast.LENGTH_LONG).show();
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<Neighborhoods> call, Throwable t) {
-//                Toast.makeText(getApplicationContext(), "er : " + t.getMessage(), Toast.LENGTH_LONG).show();
-//
-//            }
-//        });
-//        call.enqueue(new Callback<NeighborhoodsResponse>() {
-//            @Override
-//            public void onResponse(Call<NeighborhoodsResponse> call, Response<NeighborhoodsResponse> response) {
-//                Toast.makeText(getApplicationContext(), "hi : ", Toast.LENGTH_LONG).show();
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<NeighborhoodsResponse> call, Throwable t) {
-//                Toast.makeText(getApplicationContext(), "er : " + t.getMessage(), Toast.LENGTH_LONG).show();
-//
-//            }
-//        });
-//        call.enqueue(new Callback<NeighborhoodsResponse>() {
-//            @Override
-//            public void onResponse(Call<NeighborhoodsResponse> call, Response<NeighborhoodsResponse> response) {
-//                if (response.isSuccessful()) {
-//                    NeighborhoodsResponse neighborhoods = response.body();
-//                    String helo = neighborhoods.getNeighborhoods().toString();
-//                    Toast.makeText(getApplicationContext(), "hi : " + helo, Toast.LENGTH_LONG).show();
-//
-//                    Log.d("okkk", "isokkkkkk : " + helo);
-//
-//
-//                } else {
-//
-//                    if (response.code() == 422) {
-//                        Log.d("okkk", "iserror 422  : ");
-//
-//                    }
-//
-//
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<NeighborhoodsResponse> call, Throwable t) {
-//
-//            }
-//        });
-
-
-//        call.enqueue(new Callback() {
-//            @Override
-//            public void onResponse(Call call, Response response) {
-//                resNe = "Helllllo";
-//                Log.e("TAG", "response 33: " + new Gson().toJson(response.body()));
-//            }
-//
-//            @Override
-//            public void onFailure(Call call, Throwable t) {
-//                Log.e("TAG", "onFailure: " + t.toString());
-//                // Log error here since request failed
-//            }
-//        });
-
 
     }
 
-    public static <T> List<T> getTeamListFromJson(String jsonString, Type type) {
+    public static <T> List<T> getNeFromJson(String jsonString, Type type) {
         if (!isValid(jsonString)) {
             return null;
         }
@@ -889,5 +647,5 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-
+//
 }
