@@ -91,16 +91,32 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.114" />
 
+
+    <TextView
+        android:id="@+id/hasTicket"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="لا توجد لديك تذاكر سابقة"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/scrollView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/scrollView" />
+
     <ScrollView
         android:id="@+id/scrollView"
 
-        android:layout_width="373dp"
-        android:layout_height="466dp"
+        android:layout_width="376dp"
+        android:layout_height="477dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.485"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.939">
+        app:layout_constraintVertical_bias="0.976">
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
@@ -111,5 +127,6 @@
 
 
     </ScrollView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
