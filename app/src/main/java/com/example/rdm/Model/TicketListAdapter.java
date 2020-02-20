@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,7 +43,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
         TicketList ticket = ticketLists.get(position);
 
         //binding the data with the viewholder views
-        holder.ticketInfo.setText("معلومات التذكرة"); //String.valueOf(ticket.getId())
+        holder.ticketInfo.setText(ticket.getDescription()); //String.valueOf(ticket.getId())
         holder.status.setText("الحالة: " + ticket.getStatus());
         holder.date.setText("التصنيف: " + (ticket.getClassification()));
         holder.ticket_id.setText(String.valueOf(ticket.getId()));

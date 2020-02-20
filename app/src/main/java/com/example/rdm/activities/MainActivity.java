@@ -147,10 +147,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         profile_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                listTicket();
 
-
-                Intent mainIntent = new Intent(MainActivity.this, TicketListActivity.class);
-                startActivity(mainIntent);
             }
         });
 
@@ -489,7 +487,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 //                            String message = response.body().toString();
                     Toast.makeText(getApplicationContext(), "تمت إضافة التذكرة بنجاح !", Toast.LENGTH_LONG).show();
-//                    listTicket();
+                    listTicket();
 
 
                 } else {
