@@ -62,12 +62,23 @@ public interface TicketClient {
             @Header("Authorization") String auth
     );
 
+
     @GET("neighborhoods")
     @Headers({
             "Accept: application/json",
 
     })
     Call<JsonArray> getNeighborhoods(
+            @Header("Authorization") String auth
+    );
+
+
+    @GET("list")
+    @Headers({
+            "Accept: application/json",
+
+    })
+    Call<JsonArray> listTicket(
             @Header("Authorization") String auth
     );
     //JsonArray
