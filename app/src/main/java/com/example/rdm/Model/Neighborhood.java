@@ -16,6 +16,7 @@ public class Neighborhood {
     public Neighborhood(String name_ar, String id) {
         this.id = id;
         this.name_ar = name_ar;
+
     }
 
 
