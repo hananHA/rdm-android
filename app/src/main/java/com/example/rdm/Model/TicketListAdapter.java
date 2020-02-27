@@ -1,15 +1,18 @@
 package com.example.rdm.Model;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.rdm.R;
+import com.example.rdm.activities.TicketActivity;
 
 import java.util.List;
 
@@ -60,6 +63,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
 
     class TicketListViewHolder extends RecyclerView.ViewHolder {
 
+
         TextView ticketInfo, status, date, ticket_id;
 
         public TicketListViewHolder(View itemView) {
@@ -74,13 +78,19 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    int id = Integer.parseInt(ticket_id.getText().toString());
-                    Log.d("click me", "your click here!" + id);
+                    String id = ticket_id.getText().toString();
+
+                    Intent intent = new Intent(mCtx, TicketActivity.class);
+                    intent.putExtra("TICKET_ID", id);
+                    mCtx.startActivity(intent);
 
 
                 }
             });
 
         }
+
     }
+
+
 }

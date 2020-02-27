@@ -665,6 +665,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if (response.isSuccessful()) {
                         App.listTicketResponse = response.body().toString();
 
+
                         Intent intent = new Intent(MainActivity.this, TicketListActivity.class);
                         startActivity(intent);
 

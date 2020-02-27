@@ -2,6 +2,7 @@ package com.example.rdm.api;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import java.io.File;
 import java.util.List;
@@ -24,33 +25,6 @@ public interface TicketClient {
 
     String BASE_URL = " http://www.ai-rdm.website/api/ticket/";
 
-    //
-//    @FormUrlEncoded
-//    @Headers({
-//            "Accept: application/json",
-//    })
-//    @Multipart
-//    @POST("create")
-//    Call<ResponseBody> createTicket(@Field("description") String description
-//    );
-////    @Header("Authorization") String authHeader
-//
-//
-//    @POST("create")
-//    @Multipart
-//    @Headers({
-//            "Accept: application/json",
-//    })
-//    Call<ResponseBody> addTicket(@Part("latitude") double latitude,
-//                                 @Part("longitude") double longitude,
-//                                 @Part("city") int city,
-//                                 @Part("neighborhood") int neighborhood,
-//                                 @Part MultipartBody.Part[] filePart,
-//                                 @Header("Authorization") String auth,
-//                                 @Part("description") String description
-//
-//
-//    );
 
     @POST("create")
     @Headers({
@@ -82,6 +56,20 @@ public interface TicketClient {
             @Header("Authorization") String auth
     );
     //JsonArray
+
+
+    @POST("show")
+    @FormUrlEncoded
+    @Headers({
+            "Accept: application/json",
+
+    })
+    Call<ResponseBody> getTicket(
+
+            @Field("ticket_id") int ticket_id,
+            @Header("Authorization") String auth
+    );
+
 
 }
 

@@ -40,7 +40,6 @@ public class TicketListActivity extends AppCompatActivity {
         hasText = findViewById(R.id.hasTicket);
         hasText.setVisibility(View.INVISIBLE);
 
-
         loadListTicket();
 
     }
