@@ -97,8 +97,7 @@
                 android:background="@drawable/white_rounded"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:layout_editor_absoluteX="20dp">
+                app:layout_constraintEnd_toEndOf="parent">
 
                 <TextView
                     android:id="@+id/textView11"
@@ -173,7 +172,7 @@
                     android:id="@+id/textView12"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginEnd="25dp"
                     android:layout_marginRight="25dp"
                     android:text="الوصف"
@@ -207,7 +206,7 @@
                     android:id="@+id/ne"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginEnd="25dp"
                     android:layout_marginRight="25dp"
                     android:text="الحي"
@@ -218,23 +217,26 @@
 
                 <Spinner
                     android:id="@+id/spinner"
-                    android:layout_width="200dp"
-                    android:layout_height="76dp"
-                    android:layout_marginTop="15dp"
+                    android:background="@drawable/edittext_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginTop="2dp"
                     android:layout_marginEnd="25dp"
                     android:layout_marginRight="25dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/description" />
+                    app:layout_constraintTop_toBottomOf="@+id/ne" />
 
 
                 <EditText
                     android:id="@+id/description"
-                    android:layout_width="359dp"
+                    android:layout_width="match_parent"
                     android:layout_height="85dp"
                     android:layout_marginStart="25dp"
                     android:layout_marginLeft="25dp"
-                    android:layout_marginTop="48dp"
+                    android:layout_marginTop="2dp"
                     android:layout_marginEnd="25dp"
                     android:layout_marginRight="25dp"
                     android:background="@drawable/edittext_bg"
@@ -243,8 +245,42 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+                    app:layout_constraintTop_toBottomOf="@+id/textView12" />
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/confirm"
+                android:layout_width="match_parent"
+                android:layout_height="480dp"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/confirm_green"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@mipmap/user"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <!--<View
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+
+
+                </View>-->
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -253,6 +289,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#75000000"
+            android:visibility="gone"
             android:orientation="vertical">
 
             <TextView

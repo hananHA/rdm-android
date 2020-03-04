@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private boolean opened;
     private ConstraintLayout addTicketCard;
+    private ConstraintLayout confirmCard;
     private int PERMISSION_ID = 44;
     private FusedLocationProviderClient mFusedLocationClient;
     public static String lat;
@@ -111,6 +112,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         addTicketCard = findViewById(R.id.view);
         addTicketCard.setVisibility(View.INVISIBLE);
+        confirmCard = findViewById(R.id.confirm);
+        confirmCard.setVisibility(View.INVISIBLE);
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -148,7 +151,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-
         addTicketButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -173,7 +175,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View view) {
                 if (!canSend) {
-                    Toast.makeText(getApplicationContext(), "الرجاء رفع صورة واحدة على الأقل !", Toast.LENGTH_LONG).show();
+                    confirmCard.setBackgroundResource(R.drawable.confirm_red);
+                    confirmCard.setVisibility(View.VISIBLE);
+                    TranslateAnimation animate = new TranslateAnimation(
+                            0,
+                            0,
+                            addTicketCard.getHeight(),
+                            0);
+                    animate.setDuration(500);
+                    animate.setFillAfter(true);
+                    confirmCard.startAnimation(animate);
+                    //Toast.makeText(getApplicationContext(), "الرجاء رفع صورة واحدة على الأقل !", Toast.LENGTH_LONG).show();
                     return;
                 }
 
@@ -181,6 +193,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (MainActivity.lat != null && MainActivity.lng != null) {
                     latitude = Double.parseDouble(MainActivity.lat);
                     longitude = Double.parseDouble(MainActivity.lng);
+                }
+
+                if(canSend) {
+                    confirmCard.setVisibility(View.VISIBLE);
+                    TranslateAnimation animate = new TranslateAnimation(
+                            0,
+                            0,
+                            addTicketCard.getHeight(),
+                            0);
+                    animate.setDuration(500);
+                    animate.setFillAfter(true);
+                    confirmCard.startAnimation(animate);
                 }
 
 
@@ -200,7 +224,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-
         photo1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -209,7 +232,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
         });
-
 
         photo2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -220,7 +242,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-
         photo3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -230,9 +251,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        hintLayout =
-
-                findViewById(R.id.hint);
+        hintLayout = findViewById(R.id.hint);
         hintLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
