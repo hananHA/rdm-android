@@ -1,11 +1,8 @@
-package com.example.rdm.api;
+package com.example.rdm.Model;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
-public class Neighborhoods {
-
+public class Neighborhood {
 
     @SerializedName("id")
     private String id;
@@ -16,12 +13,15 @@ public class Neighborhoods {
     @SerializedName("name_en")
     private String name_en;
 
+    public Neighborhood(String name_ar, String id) {
+        this.id = id;
+        this.name_ar = name_ar;
+
+    }
+
 
     @SerializedName("city_id")
     private String city_id;
-
-    @SerializedName("neighborhood")
-    private List<Neighborhood> neighborhood;
 
     public String getId() {
         return id;
@@ -55,6 +55,23 @@ public class Neighborhoods {
         this.city_id = city_id;
     }
 
+    //to display object as a string in spinner
+    @Override
+    public String toString() {
+        return name_ar;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Neighborhood) {
+            Neighborhood c = (Neighborhood) obj;
+            if (c.getName_ar().equals(name_ar) && c.getId() == id) return true;
+        }
+
+        return false;
+    }
+
 
 }
+
 

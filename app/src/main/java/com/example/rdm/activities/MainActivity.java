@@ -1,8 +1,10 @@
 package com.example.rdm.activities;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -21,8 +23,9 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
+
 import com.example.rdm.Model.App;
-import com.example.rdm.api.Neighborhood;
+import com.example.rdm.Model.Neighborhood;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -36,8 +39,10 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.example.rdm.R;
+
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
+
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
@@ -45,6 +50,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageView;
+
 import com.example.rdm.BuildConfig;
 import com.example.rdm.api.TicketClient;
 import com.google.gson.Gson;
@@ -52,7 +58,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -62,6 +70,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -92,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     String mCurrentPhotoPath;
     static final int REQUEST_TAKE_PHOTO = 1;
-    private ImageView photo0, photo1, photo2, photo3;
+    private ImageView photo0, photo1, photo2, photo3, profile_image;
     private EditText description;
     double latitude = 0.0;
     double longitude = 0.0;
@@ -135,8 +144,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         photo3 = findViewById(R.id.photo3);
         sendTicket = findViewById(R.id.sendTicket);
         description = findViewById(R.id.description);
+        profile_image = findViewById(R.id.profile_image);
 
         getNeighborhoods();
+        profile_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listTicket();
+
+            }
+        });
+
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -491,6 +509,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 //                            String message = response.body().toString();
                     Toast.makeText(getApplicationContext(), "تمت إضافة التذكرة بنجاح !", Toast.LENGTH_LONG).show();
+                    listTicket();
 
 
                 } else {
@@ -643,6 +662,53 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onFailure(Call<JsonArray> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "الرجاء التحقق من اتصالك بالإنترنت والمحاولة لاحقا ", Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+
+    }
+
+    public void listTicket() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(TicketClient.BASE_URL)
+                //Here we are using the GsonConverterFactory to directly convert json data to object
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(App.okHttpClientCall().build())
+                .build();
+
+        TicketClient api = retrofit.create(TicketClient.class);
+
+        Call<JsonArray> call = api.listTicket("Bearer " + App.token);
+        call.enqueue(new Callback<JsonArray>() {
+            @Override
+            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+                try {
+                    if (response.isSuccessful()) {
+                        App.listTicketResponse = response.body().toString();
+
+
+                        Intent intent = new Intent(MainActivity.this, TicketListActivity.class);
+                        startActivity(intent);
+
+
+//                        Log.d("resList", res);
+
+                    } else {
+                        if (response.code() == 422 || response.code() == 401 || response.code() == 500) {
+                            Log.e("error list ticket ", "error code is: " + response.code());
+
+                        }
+                    }
+
+                } catch (Exception e) {
+                    Log.e("error when list ticket", e.getMessage());
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonArray> call, Throwable t) {
 
             }
         });

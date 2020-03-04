@@ -17,10 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-
-
-        <activity android:name=".activities.ForgetPass"></activity>
-
+        <activity android:name=".activities.TicketActivity"></activity>
+        <activity android:name=".activities.ForgetPass" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -32,7 +30,7 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name=".activities.ticketList" />
+        <activity android:name=".activities.TicketListActivity" />
 
         <meta-data
             android:name="com.google.android.gms.version"
