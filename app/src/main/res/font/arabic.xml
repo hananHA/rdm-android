@@ -5,6 +5,6 @@
     <font
         android:fontStyle="normal"
         android:fontWeight="400"
-        android:font="@font/ar" />
+        android:font="@font/ar_font" />
 </font-family>
 

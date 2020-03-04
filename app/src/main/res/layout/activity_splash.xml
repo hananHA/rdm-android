@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.SplashActivity"
-    android:background="@color/colorPrimary"
+    android:background="@color/white"
     >
 
     <ImageView
@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:contentDescription="@string/rdm"
         android:scaleType="centerInside"
-        android:src="@drawable/logo"
+        android:src="@drawable/salik_logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

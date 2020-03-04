@@ -36,7 +36,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
     public TicketListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //inflating and returning our view holder
         LayoutInflater inflater = LayoutInflater.from(mCtx);
-        View view = inflater.inflate(R.layout.list_ticket, null);
+        View view = inflater.inflate(R.layout.ticket_row, null);
         return new TicketListViewHolder(view);
     }
 
@@ -47,7 +47,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
 
         //binding the data with the viewholder views
         holder.ticketInfo.setText(ticket.getDescription()); //String.valueOf(ticket.getId())
-        holder.status.setText("الحالة: " + ticket.getStatus());
+        holder.status.setText(ticket.getStatus());
         holder.date.setText("التصنيف: " + (ticket.getClassification()));
         holder.ticket_id.setText(String.valueOf(ticket.getId()));
 
@@ -69,11 +69,11 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
         public TicketListViewHolder(View itemView) {
             super(itemView);
 
-            ticketInfo = itemView.findViewById(R.id.ticketInfo);
-            status = itemView.findViewById(R.id.status);
-            date = itemView.findViewById(R.id.date);
+            ticketInfo = itemView.findViewById(R.id.ticket_desc);
+            status = itemView.findViewById(R.id.ticket_status);
+            date = itemView.findViewById(R.id.ticket_date);
             ticket_id = itemView.findViewById(R.id.ticket_id);
-            ticket_id.setVisibility(View.INVISIBLE);
+            ticket_id.setVisibility(View.GONE);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

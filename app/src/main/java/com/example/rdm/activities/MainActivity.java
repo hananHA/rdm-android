@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
@@ -119,6 +120,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            if (getWindow().getDecorView().getLayoutDirection() == View.LAYOUT_DIRECTION_LTR){
+                getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+            }
+        }
+
         addTicketCard = findViewById(R.id.view);
         addTicketCard.setVisibility(View.INVISIBLE);
         confirmCard = findViewById(R.id.confirm);
@@ -134,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         requestPermissions();
         getLastLocation();
 
-        logoutButton = findViewById(R.id.logoutButton);
+        //logoutButton = findViewById(R.id.logoutButton);
         addTicketButton = findViewById(R.id.addTicket);
         spinner = findViewById(R.id.spinner);
 
@@ -150,24 +157,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         profile_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listTicket();
+                //listTicket();
+                Intent intent = new Intent(MainActivity.this, MainNavActivity.class);
+                startActivity(intent);
 
             }
         });
 
-
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences.Editor editUserInfo = App.sharedPreferences.edit();
-                editUserInfo.putString("token", null);
-                editUserInfo.apply();
-
-                Intent mainIntent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(mainIntent);
-                finish();
-            }
-        });
 
         addTicketButton.setOnClickListener(new View.OnClickListener() {
             @Override
