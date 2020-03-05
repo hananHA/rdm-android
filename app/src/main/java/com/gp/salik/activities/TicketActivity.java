@@ -39,7 +39,7 @@ public class TicketActivity extends AppCompatActivity {
 
     }
 
-    public void getTicket(int ticket_id) {
+    public void getTicket(final int ticket_id) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(TicketClient.BASE_URL)
                 //Here we are using the GsonConverterFactory to directly convert json data to object
@@ -75,7 +75,7 @@ public class TicketActivity extends AppCompatActivity {
                         photos.put(obj.get("userRating"));
 
 
-                        Toast.makeText(getApplicationContext(), "hhh", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "id: " + ticket_id, Toast.LENGTH_LONG).show();
 
                     } else {
                         if (response.code() == 422 || response.code() == 401 || response.code() == 500) {

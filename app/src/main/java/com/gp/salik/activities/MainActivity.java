@@ -157,9 +157,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         profile_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //listTicket();
-                Intent intent = new Intent(MainActivity.this, MainNavActivity.class);
-                startActivity(intent);
+                listTicket();
+//                Intent intent = new Intent(MainActivity.this, MainNavActivity.class);
+//                startActivity(intent);
 
             }
         });
