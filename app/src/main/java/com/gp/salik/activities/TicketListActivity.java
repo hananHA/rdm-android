@@ -1,22 +1,19 @@
-package com.example.rdm.activities;
+package com.gp.salik.activities;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.rdm.Model.App;
-import com.example.rdm.Model.TicketList;
-import com.example.rdm.Model.TicketListAdapter;
-import com.example.rdm.R;
+import com.gp.salik.Model.App;
+import com.gp.salik.Model.TicketList;
+import com.gp.salik.Model.TicketListAdapter;
+import com.gp.salik.R;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -24,53 +21,49 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TicketsList extends Fragment {
+public class TicketListActivity extends AppCompatActivity {
 
-    public static List<JSONObject> ticketArrayList;
-
-    View v;
-    private RecyclerView ticketsRecycler;
-    List<TicketList> ticketListClass;
+    public static List<JSONObject> ticketArrayList = new ArrayList<>();
+    RecyclerView recyclerView;
     TextView hasText;
+    //a list to store all the products
+    List<TicketList> ticketListClass;
 
-    public TicketsList() {
-    }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.tickets_list_fragment, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_ticket_list);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            if (getActivity().getWindow().getDecorView().getLayoutDirection() == View.LAYOUT_DIRECTION_LTR) {
-                getActivity().getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+            if (getWindow().getDecorView().getLayoutDirection() == View.LAYOUT_DIRECTION_LTR){
+                getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
             }
         }
 
-        hasText = v.findViewById(R.id.hasTicket);
-        hasText.setVisibility(View.GONE);
-
-        ticketArrayList = new ArrayList<>();
-
-        ticketsRecycler = v.findViewById(R.id.recyclerTickets);
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         ticketListClass = new ArrayList<>();
-
-        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
-        ticketsRecycler.setLayoutManager(llm);
+        hasText = findViewById(R.id.hasTicket);
+        hasText.setVisibility(View.INVISIBLE);
 
         loadListTicket();
 
-        return v;
     }
 
     public void loadListTicket() {
+
+
         try {
+
             JSONArray jsonarray = new JSONArray(App.listTicketResponse);
             if (jsonarray.length() == 0) {
                 hasText.setVisibility(View.VISIBLE);
+
             } else {
-                hasText.setVisibility(View.GONE);
+
+
                 int i;
                 JSONObject json_data;
                 JSONObject ticket = null;
@@ -80,6 +73,7 @@ public class TicketsList extends Fragment {
                     ticketArrayList.add(i, ticket);
                 }
 
+
                 for (i = 0; i < ticketArrayList.size(); i++) {
                     ticketListClass.add(
                             new TicketList(
@@ -88,13 +82,14 @@ public class TicketsList extends Fragment {
                                     ticketArrayList.get(i).getString("status"),
                                     ticketArrayList.get(i).getString("classification")
                             ));
-                }
 
+                }
+//
                 //creating recyclerview adapter
-                TicketListAdapter adapter = new TicketListAdapter(this.getContext(), ticketListClass);
+                TicketListAdapter adapter = new TicketListAdapter(this, ticketListClass);
 
                 //setting adapter to recyclerview
-                ticketsRecycler.setAdapter(adapter);
+                recyclerView.setAdapter(adapter);
             }
 
         } catch (Exception e) {
@@ -103,3 +98,7 @@ public class TicketsList extends Fragment {
         }
     }
 }
+
+
+
+

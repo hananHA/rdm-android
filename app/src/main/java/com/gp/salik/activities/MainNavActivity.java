@@ -1,4 +1,4 @@
-package com.example.rdm.activities;
+package com.gp.salik.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
@@ -11,9 +11,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.rdm.Model.App;
-import com.example.rdm.Model.ViewPagerAdapter;
-import com.example.rdm.R;
+import com.gp.salik.Model.App;
+import com.gp.salik.Model.ViewPagerAdapter;
+import com.gp.salik.R;
 
 public class MainNavActivity extends AppCompatActivity {
 

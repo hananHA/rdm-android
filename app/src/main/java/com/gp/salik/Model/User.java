@@ -1,9 +1,7 @@
-package com.example.rdm.Model;
+package com.gp.salik.Model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import java.lang.reflect.Array;
 
 public class User {
     @SerializedName("id")

@@ -1,4 +1,4 @@
-package com.example.rdm;
+package com.gp.salik;
 
 import org.junit.Test;
 

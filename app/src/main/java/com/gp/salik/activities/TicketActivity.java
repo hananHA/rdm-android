@@ -1,23 +1,19 @@
-package com.example.rdm.activities;
+package com.gp.salik.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.rdm.Model.App;
-import com.example.rdm.R;
-import com.example.rdm.api.TicketClient;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.gp.salik.Model.App;
+import com.gp.salik.R;
+import com.gp.salik.api.TicketClient;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import okhttp3.ResponseBody;

@@ -1,4 +1,4 @@
-package com.example.rdm.activities;
+package com.gp.salik.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,8 +25,8 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.rdm.Model.App;
-import com.example.rdm.Model.Neighborhood;
+import com.gp.salik.Model.App;
+import com.gp.salik.Model.Neighborhood;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -39,7 +39,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.example.rdm.R;
+import com.gp.salik.R;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
@@ -52,8 +52,8 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.example.rdm.BuildConfig;
-import com.example.rdm.api.TicketClient;
+import com.gp.salik.BuildConfig;
+import com.gp.salik.api.TicketClient;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;

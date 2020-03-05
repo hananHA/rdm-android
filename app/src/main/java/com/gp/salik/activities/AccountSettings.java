@@ -1,4 +1,4 @@
-package com.example.rdm.activities;
+package com.gp.salik.activities;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.rdm.R;
+import com.gp.salik.R;
 
 public class AccountSettings extends Fragment {
 

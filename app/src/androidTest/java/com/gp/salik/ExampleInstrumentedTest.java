@@ -1,4 +1,4 @@
-package com.example.rdm;
+package com.gp.salik;
 
 import android.content.Context;
 

@@ -1,8 +1,7 @@
-package com.example.rdm.activities;
+package com.gp.salik.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -10,14 +9,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.rdm.Model.App;
-import com.example.rdm.R;
-import com.example.rdm.api.TicketClient;
+import com.gp.salik.Model.App;
+import com.gp.salik.R;
+import com.gp.salik.api.TicketClient;
 import com.google.gson.JsonArray;
 
-import org.json.JSONObject;
-
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

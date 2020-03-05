@@ -1,18 +1,16 @@
-package com.example.rdm.Model;
+package com.gp.salik.Model;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.rdm.R;
-import com.example.rdm.activities.TicketActivity;
+import com.gp.salik.R;
+import com.gp.salik.activities.TicketActivity;
 
 import java.util.List;
 

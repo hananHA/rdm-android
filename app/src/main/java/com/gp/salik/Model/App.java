@@ -1,4 +1,4 @@
-package com.example.rdm.Model;
+package com.gp.salik.Model;
 
 import android.content.SharedPreferences;
 

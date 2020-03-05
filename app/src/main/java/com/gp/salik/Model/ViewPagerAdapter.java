@@ -1,11 +1,11 @@
-package com.example.rdm.Model;
+package com.gp.salik.Model;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.example.rdm.activities.AccountSettings;
-import com.example.rdm.activities.TicketsList;
+import com.gp.salik.activities.AccountSettings;
+import com.gp.salik.activities.TicketsList;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 

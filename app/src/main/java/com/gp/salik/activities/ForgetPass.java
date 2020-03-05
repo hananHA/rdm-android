@@ -1,4 +1,4 @@
-package com.example.rdm.activities;
+package com.gp.salik.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.rdm.R;
+import com.gp.salik.R;
 
 public class ForgetPass extends AppCompatActivity {
 

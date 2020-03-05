@@ -1,4 +1,4 @@
-package com.example.rdm.activities;
+package com.gp.salik.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,10 +12,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.rdm.Model.App;
-import com.example.rdm.R;
-import com.example.rdm.Model.User;
-import com.example.rdm.api.UserClient;
+import com.gp.salik.Model.App;
+import com.gp.salik.R;
+import com.gp.salik.Model.User;
+import com.gp.salik.api.UserClient;
 
 import org.json.JSONObject;
 

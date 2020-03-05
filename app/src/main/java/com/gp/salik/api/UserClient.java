@@ -1,6 +1,6 @@
-package com.example.rdm.api;
+package com.gp.salik.api;
 
-import com.example.rdm.Model.User;
+import com.gp.salik.Model.User;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
