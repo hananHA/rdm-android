@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.rdm">
+    package="com.gp.salik">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -17,9 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.MainNavActivity"></activity>
-        <activity android:name=".activities.TicketActivity" />
-        <activity android:name=".activities.ForgetPass" />
+        <activity android:name="com.gp.salik.activities.MainNavActivity"></activity>
+        <activity android:name="com.gp.salik.activities.TicketActivity" />
+        <activity android:name="com.gp.salik.activities.ForgetPass" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -31,7 +31,7 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name=".activities.TicketListActivity" />
+        <activity android:name="com.gp.salik.activities.TicketListActivity" />
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -41,7 +41,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".activities.SplashActivity"
+            android:name="com.gp.salik.activities.SplashActivity"
             android:noHistory="true"
             android:screenOrientation="portrait"
             android:theme="@style/LoginRegisterPage">
@@ -53,16 +53,16 @@
             </intent-filter>
         </activity> <!-- واجهة تسجيل جديد -->
         <activity
-            android:name=".activities.RegisterActivity"
+            android:name="com.gp.salik.activities.RegisterActivity"
             android:noHistory="true"
             android:screenOrientation="portrait"
             android:theme="@style/LoginRegisterPage" /> <!-- واجهة تسجيل الدخول -->
         <activity
-            android:name=".activities.LoginActivity"
+            android:name="com.gp.salik.activities.LoginActivity"
             android:noHistory="true"
             android:screenOrientation="portrait"
             android:theme="@style/LoginRegisterPage" />
-        <activity android:name=".activities.MainActivity">
+        <activity android:name="com.gp.salik.activities.MainActivity">
 
             <!--
             <intent-filter>
