@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.gp.salik.R;
 
-public class AccountSettings extends Fragment {
+public class AccountSettingsFragment extends Fragment {
 
     View v;
 

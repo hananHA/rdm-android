@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.gp.salik.R;
 
-public class ForgetPass extends AppCompatActivity {
+public class ForgetPassActivity extends AppCompatActivity {
 
     private TextView loginText;
 
@@ -30,8 +30,9 @@ public class ForgetPass extends AppCompatActivity {
         loginText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ForgetPass.this, LoginActivity.class);
+                Intent intent = new Intent(ForgetPassActivity.this, LoginActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
     }

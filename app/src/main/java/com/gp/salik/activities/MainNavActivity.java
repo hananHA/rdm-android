@@ -34,9 +34,6 @@ public class MainNavActivity extends AppCompatActivity {
 
         vpadapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        //vpadapter.addFragment(new TicketsList());
-        //vpadapter.addFragment(new AccountSettings());
-
         logoutButton = findViewById(R.id.logout_btn);
         backButton = findViewById(R.id.back_to_map);
         helloCircle = findViewById(R.id.hello_circle);
@@ -60,8 +57,13 @@ public class MainNavActivity extends AppCompatActivity {
                 editUserInfo.putString("token", null);
                 editUserInfo.apply();
 
-                Intent mainIntent = new Intent(MainNavActivity.this, LoginActivity.class);
-                startActivity(mainIntent);
+                // TODO: make sure the activities are all closed
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("EXIT", true);
+                startActivity(intent);
                 finish();
             }
         });
@@ -69,8 +71,6 @@ public class MainNavActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainNavActivity.this, MainActivity.class);
-                startActivity(intent);
                 finish();
             }
         });

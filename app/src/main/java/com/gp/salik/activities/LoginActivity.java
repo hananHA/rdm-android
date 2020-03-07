@@ -54,8 +54,9 @@ public class LoginActivity extends AppCompatActivity {
         resetText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, ForgetPass.class);
+                Intent intent = new Intent(LoginActivity.this, ForgetPassActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -175,6 +176,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
     }

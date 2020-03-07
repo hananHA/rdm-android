@@ -19,7 +19,7 @@
         android:usesCleartextTraffic="true">
         <activity android:name="com.gp.salik.activities.MainNavActivity"></activity>
         <activity android:name="com.gp.salik.activities.TicketActivity" />
-        <activity android:name="com.gp.salik.activities.ForgetPass" />
+        <activity android:name="com.gp.salik.activities.ForgetPassActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -71,6 +71,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             -->
+        </activity>
+        <activity android:name=".activities.AddTicketActivity"
+            android:theme="@style/HalfScreen">
+        </activity>
+        <activity android:name=".activities.ConfirmGreen"
+            android:theme="@style/HalfScreen">
+        </activity>
+        <activity android:name=".activities.ConfirmRed"
+            android:theme="@style/HalfScreen">
         </activity>
     </application>
 
