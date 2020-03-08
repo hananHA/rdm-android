@@ -17,9 +17,9 @@ import com.gp.salik.R;
 
 public class MainNavActivity extends AppCompatActivity {
 
-    ViewPager viewPager;
+    static ViewPager viewPager;
     TextView logoutButton, backButton, helloCircle, settingsCircle, ticketsCircle;
-    ViewPagerAdapter vpadapter;
+    static ViewPagerAdapter vpadapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,4 +90,19 @@ public class MainNavActivity extends AppCompatActivity {
             }
         });
     }
+
+    public static void openTicketDetails(String tID) {
+        vpadapter.settID(tID);
+        viewPager.setAdapter(vpadapter);
+        viewPager.setCurrentItem(2);
+
+    }
+    public static ViewPager getViewPager() {
+        return viewPager;
+    }
+
+    public static ViewPagerAdapter getViewPagerAdapter() {
+        return vpadapter;
+    }
+
 }

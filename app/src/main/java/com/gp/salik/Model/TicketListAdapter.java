@@ -2,20 +2,25 @@ package com.gp.salik.Model;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.gp.salik.R;
-import com.gp.salik.activities.TicketActivity;
+import com.gp.salik.activities.MainNavActivity;
+import com.gp.salik.activities.TicketDetailsFragment;
 
 import java.util.List;
 
 public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.TicketListViewHolder> {
 
+    private ViewPager viewPager;
+    private ViewPagerAdapter vpadapter;
 
     //this context we will use to inflate the layout
     private Context mCtx;
@@ -78,9 +83,15 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
                 public void onClick(View view) {
                     String id = ticket_id.getText().toString();
 
-                    Intent intent = new Intent(mCtx, TicketActivity.class);
+                    Intent intent = new Intent(mCtx, TicketDetailsFragment.class);
+                    System.out.println("IDADAPTER" +id);
+                    viewPager = MainNavActivity.getViewPager();
+                    //vpadapter = MainNavActivity.getViewPagerAdapter();
+                    //vpadapter.settID(id);
                     intent.putExtra("TICKET_ID", id);
-                    mCtx.startActivity(intent);
+                    viewPager.setCurrentItem(2);
+                    //mCtx.startActivity(intent);
+                    //MainNavActivity.openTicketDetails(id);
 
 
                 }

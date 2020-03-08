@@ -66,11 +66,14 @@ public class TicketsListFragment extends Fragment {
 
         ticketsRecycler.addItemDecoration(itemDecorator);
 
+
+
         loadListTicket();
 
         return v;
     }
 
+    //TODO: This doesn't work unless the user submit a ticket
     public void loadListTicket() {
         try {
             JSONArray jsonarray = new JSONArray(App.listTicketResponse);

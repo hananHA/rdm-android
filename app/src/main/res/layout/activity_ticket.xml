@@ -9,7 +9,7 @@
     android:orientation="vertical"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    tools:context=".activities.TicketActivity"
+    tools:context=".activities.TicketDetailsFragment"
     tools:layout_editor_absoluteX="20dp">
 
     <TextView

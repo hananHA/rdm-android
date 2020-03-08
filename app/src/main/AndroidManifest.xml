@@ -18,7 +18,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name="com.gp.salik.activities.MainNavActivity"></activity>
-        <activity android:name="com.gp.salik.activities.TicketActivity" />
+        <activity android:name="com.gp.salik.activities.TicketDetailsFragment" />
         <activity android:name="com.gp.salik.activities.ForgetPassActivity" />
 
         <provider

@@ -1,9 +1,16 @@
 package com.gp.salik.activities;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.gp.salik.Model.App;
@@ -23,20 +30,47 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class TicketActivity extends AppCompatActivity {
+public class TicketDetailsFragment extends Fragment {
+
+    private View v;
+    String tID;
     public static List<JSONObject> photosList = new ArrayList<>();
     public static List<JSONObject> ticketHistories = new ArrayList<>();
     public static List<JSONObject> userRating = new ArrayList<>();
 
 
+    public TicketDetailsFragment(String tID) {
+        this.tID = tID;
+    }
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ticket);
-        int ticket_id = Integer.parseInt(getIntent().getStringExtra("TICKET_ID"));
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        v = inflater.inflate(R.layout.activity_ticket, container, false);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            if (getActivity().getWindow().getDecorView().getLayoutDirection() == View.LAYOUT_DIRECTION_LTR) {
+                getActivity().getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+            }
+        }
+
+        //System.out.println("TDFRAGMENT" +tID);
+        //settID(this.tID);
+
+        int ticket_id = Integer.parseInt(getActivity().getIntent().getStringExtra("TICKET_ID"));
+        System.out.println(ticket_id);
         getTicket(ticket_id);
 
 
+        return v;
+    }
+
+    public void settID(String tID) {
+        this.tID = tID;
+    }
+
+    public String gettID() {
+        return tID;
     }
 
     public void getTicket(final int ticket_id) {
@@ -75,7 +109,7 @@ public class TicketActivity extends AppCompatActivity {
                         photos.put(obj.get("userRating"));
 
 
-                        Toast.makeText(getApplicationContext(), "id: " + ticket_id, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity().getApplicationContext(), "id: " + ticket_id, Toast.LENGTH_LONG).show();
 
                     } else {
                         if (response.code() == 422 || response.code() == 401 || response.code() == 500) {
@@ -93,7 +127,7 @@ public class TicketActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "الرجاء التحقق من اتصالك بالإنترنت والمحاولة لاحقا ", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity().getApplicationContext(), "الرجاء التحقق من اتصالك بالإنترنت والمحاولة لاحقا ", Toast.LENGTH_LONG).show();
 
 
             }
