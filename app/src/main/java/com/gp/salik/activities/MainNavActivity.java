@@ -7,13 +7,22 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.gson.JsonArray;
 import com.gp.salik.Model.App;
 import com.gp.salik.Model.ViewPagerAdapter;
 import com.gp.salik.R;
+import com.gp.salik.api.TicketClient;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainNavActivity extends AppCompatActivity {
 
@@ -78,8 +87,9 @@ public class MainNavActivity extends AppCompatActivity {
         ticketsCircle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                vpadapter = new ViewPagerAdapter(getSupportFragmentManager());
+                viewPager.setAdapter(vpadapter);
                 viewPager.setCurrentItem(0);
-
             }
         });
 
@@ -91,12 +101,6 @@ public class MainNavActivity extends AppCompatActivity {
         });
     }
 
-    public static void openTicketDetails(String tID) {
-        vpadapter.settID(tID);
-        viewPager.setAdapter(vpadapter);
-        viewPager.setCurrentItem(2);
-
-    }
     public static ViewPager getViewPager() {
         return viewPager;
     }

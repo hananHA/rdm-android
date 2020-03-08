@@ -16,6 +16,7 @@ public class App {
     public static String resNe = null;
     public static List<Neighborhood> neighborhoodListApp = new ArrayList<>();
     public static String listTicketResponse = null;
+    public static String TICKET = null;
 
 
 

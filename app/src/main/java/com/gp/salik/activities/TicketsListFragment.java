@@ -76,6 +76,7 @@ public class TicketsListFragment extends Fragment {
     //TODO: This doesn't work unless the user submit a ticket
     public void loadListTicket() {
         try {
+
             JSONArray jsonarray = new JSONArray(App.listTicketResponse);
             if (jsonarray.length() == 0) {
                 hasText.setVisibility(View.VISIBLE);

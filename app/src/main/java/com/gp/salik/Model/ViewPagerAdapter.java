@@ -16,7 +16,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         super(fm);
     }
 
-    public ViewPagerAdapter(FragmentManager fm, String tID) {
+    /*public ViewPagerAdapter(FragmentManager fm, String tID) {
         super(fm);
         this.tID = tID;
     }
@@ -27,7 +27,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     public String gettID() {
         return tID;
-    }
+    }*/
 
     @Override
     public Fragment getItem(int position) {
@@ -38,8 +38,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return new AccountSettingsFragment();
             case 2:
-                System.out.println("VPADAPTER" +gettID());
-                return new TicketDetailsFragment(gettID());
+                return new TicketDetailsFragment();
         }
         return null;
     }

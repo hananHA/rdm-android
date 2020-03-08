@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
@@ -86,9 +87,13 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
                     Intent intent = new Intent(mCtx, TicketDetailsFragment.class);
                     System.out.println("IDADAPTER" +id);
                     viewPager = MainNavActivity.getViewPager();
+                    //vpadapter = new ViewPagerAdapter(((MainNavActivity)mCtx).getSupportFragmentManager(), id);
                     //vpadapter = MainNavActivity.getViewPagerAdapter();
                     //vpadapter.settID(id);
-                    intent.putExtra("TICKET_ID", id);
+                    //intent.putExtra("TICKET_ID", id);
+                    //viewPager.setAdapter(vpadapter);
+                    App.TICKET = id;
+                    System.out.println(App.TICKET);
                     viewPager.setCurrentItem(2);
                     //mCtx.startActivity(intent);
                     //MainNavActivity.openTicketDetails(id);

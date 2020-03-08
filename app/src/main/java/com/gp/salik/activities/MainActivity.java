@@ -253,26 +253,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
             layoutParams.setMargins(0, 0, 0, 250);
         }
-
-        /*googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng latLng) {
-                if(addTicketCard.getVisibility() == View.VISIBLE) {
-                    addTicketCard.setVisibility(View.INVISIBLE);
-                    TranslateAnimation animate = new TranslateAnimation(
-                            0,
-                            0,
-                            0,
-                            addTicketCard.getHeight());
-                    animate.setDuration(500);
-                    animate.setFillAfter(true);
-                    addTicketCard.startAnimation(animate);
-                    addTicketButton.setVisibility(View.VISIBLE);
-                    opened = !opened;
-                }
-
-            }
-        });*/
         System.out.println(lat);
         System.out.println(lng);
     }

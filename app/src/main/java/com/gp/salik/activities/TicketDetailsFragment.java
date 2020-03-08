@@ -39,9 +39,12 @@ public class TicketDetailsFragment extends Fragment {
     public static List<JSONObject> userRating = new ArrayList<>();
 
 
-    public TicketDetailsFragment(String tID) {
-        this.tID = tID;
+    public TicketDetailsFragment() {
     }
+
+    /*public TicketDetailsFragment(String tID) {
+        this.tID = tID;
+    }*/
 
     @Nullable
     @Override
@@ -54,23 +57,11 @@ public class TicketDetailsFragment extends Fragment {
             }
         }
 
-        //System.out.println("TDFRAGMENT" +tID);
-        //settID(this.tID);
-
-        int ticket_id = Integer.parseInt(getActivity().getIntent().getStringExtra("TICKET_ID"));
-        System.out.println(ticket_id);
+        System.out.println(App.TICKET);
+        int ticket_id = Integer.parseInt(App.TICKET);
         getTicket(ticket_id);
 
-
         return v;
-    }
-
-    public void settID(String tID) {
-        this.tID = tID;
-    }
-
-    public String gettID() {
-        return tID;
     }
 
     public void getTicket(final int ticket_id) {
