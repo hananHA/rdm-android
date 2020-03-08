@@ -2,7 +2,10 @@ package com.gp.salik.Model;
 
 import android.content.SharedPreferences;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -17,7 +20,8 @@ public class App {
     public static List<Neighborhood> neighborhoodListApp = new ArrayList<>();
     public static String listTicketResponse = null;
     public static String TICKET = null;
-
+    public static List<JSONObject> ticketArrayList = new ArrayList<>();
+    public static HashMap<Integer, JSONObject> ticketListMap = new HashMap<Integer, JSONObject>();
 
 
     public static OkHttpClient.Builder okHttpClientCall() {

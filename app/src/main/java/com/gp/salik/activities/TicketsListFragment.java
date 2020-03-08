@@ -28,7 +28,6 @@ import java.util.List;
 
 public class TicketsListFragment extends Fragment {
 
-    public static List<JSONObject> ticketArrayList;
 
     View v;
     private RecyclerView ticketsRecycler;
@@ -52,7 +51,6 @@ public class TicketsListFragment extends Fragment {
         hasText = v.findViewById(R.id.hasTicket);
         hasText.setVisibility(View.GONE);
 
-        ticketArrayList = new ArrayList<>();
 
         ticketsRecycler = v.findViewById(R.id.recyclerTickets);
         ticketListClass = new ArrayList<>();
@@ -65,7 +63,6 @@ public class TicketsListFragment extends Fragment {
         itemDecorator.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.divider));
 
         ticketsRecycler.addItemDecoration(itemDecorator);
-
 
 
         loadListTicket();
@@ -85,19 +82,22 @@ public class TicketsListFragment extends Fragment {
                 int i;
                 JSONObject json_data;
                 JSONObject ticket = null;
+                App.ticketArrayList.clear();
+                App.ticketListMap.clear();
                 for (i = 0; i < jsonarray.length(); i++) {
                     json_data = jsonarray.getJSONObject(i);
                     ticket = (JSONObject) json_data.get("ticket");
-                    ticketArrayList.add(i, ticket);
+                    int t_id = ticket.getInt("id");
+                    App.ticketArrayList.add(0, ticket);
+                    App.ticketListMap.put(t_id, json_data);
                 }
-
-                for (i = 0; i < ticketArrayList.size(); i++) {
+                for (i = 0; i < App.ticketArrayList.size(); i++) {
                     ticketListClass.add(
                             new TicketList(
-                                    ticketArrayList.get(i).getInt("id"),
-                                    ticketArrayList.get(i).getString("description"),
-                                    ticketArrayList.get(i).getString("status"),
-                                    ticketArrayList.get(i).getString("classification")
+                                    App.ticketArrayList.get(i).getInt("id"),
+                                    App.ticketArrayList.get(i).getString("description"),
+                                    App.ticketArrayList.get(i).getString("status"),
+                                    App.ticketArrayList.get(i).getString("classification")
                             ));
                 }
 

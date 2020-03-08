@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_main);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            if (getWindow().getDecorView().getLayoutDirection() == View.LAYOUT_DIRECTION_LTR){
+            if (getWindow().getDecorView().getLayoutDirection() == View.LAYOUT_DIRECTION_LTR) {
                 getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
             }
         }
@@ -120,9 +120,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         profile_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //listTicket();
-                Intent intent = new Intent(MainActivity.this, MainNavActivity.class);
-                startActivity(intent);
+                listTicket();
+
             }
         });
 
@@ -263,6 +262,42 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onResume();
         getLastLocation();
 
+    }
+
+    public void listTicket() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(TicketClient.BASE_URL)
+                //Here we are using the GsonConverterFactory to directly convert json data to object
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(App.okHttpClientCall().build())
+                .build();
+
+        TicketClient api = retrofit.create(TicketClient.class);
+        Call<JsonArray> call = api.listTicket("Bearer " + App.token);
+        call.enqueue(new Callback<JsonArray>() {
+            @Override
+            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+                try {
+                    if (response.isSuccessful()) {
+                        App.listTicketResponse = response.body().toString();
+                        Intent intent = new Intent(MainActivity.this, MainNavActivity.class);
+                        startActivity(intent);
+//                      Log.d("resList", res);
+                    } else {
+                        if (response.code() == 422 || response.code() == 401 || response.code() == 500) {
+                            Log.e("error list ticket ", "error code is: " + response.code());
+
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.e("error when list ticket", e.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonArray> call, Throwable t) {
+            }
+        });
     }
 }
 
