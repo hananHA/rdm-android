@@ -87,8 +87,6 @@ public class MainNavActivity extends AppCompatActivity {
         ticketsCircle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //vpadapter = new ViewPagerAdapter(getSupportFragmentManager());
-                //viewPager.setAdapter(vpadapter);
                 FragmentTransaction trans = getSupportFragmentManager()
                         .beginTransaction();
                 trans.replace(R.id.root_frame, new TicketsListFragment());

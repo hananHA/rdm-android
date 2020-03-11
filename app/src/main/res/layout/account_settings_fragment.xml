@@ -15,6 +15,7 @@
             android:fontFamily="@font/ar_font"
             android:text="تعديل الحساب الشخصي"
             android:textSize="20dp"
+            android:textColor="@color/black"
             android:layout_marginBottom="18dp"
             android:layout_marginTop="25dp"
             android:layout_marginStart="25dp"
@@ -26,6 +27,7 @@
             android:fontFamily="@font/ar_font"
             android:text="الاسم:"
             android:textSize="16dp"
+            android:textColor="@color/black"
             android:layout_marginStart="25dp"
             android:layout_marginEnd="25dp"
             android:layout_marginBottom="8dp"/>
@@ -50,6 +52,7 @@
             android:fontFamily="@font/ar_font"
             android:text="الايميل:"
             android:textSize="16dp"
+            android:textColor="@color/black"
             android:layout_marginStart="25dp"
             android:layout_marginEnd="25dp"
             android:layout_marginBottom="8dp"/>
@@ -74,6 +77,7 @@
             android:fontFamily="@font/ar_font"
             android:text="رقم الجوال:"
             android:textSize="16dp"
+            android:textColor="@color/black"
             android:layout_marginStart="25dp"
             android:layout_marginEnd="25dp"
             android:layout_marginBottom="8dp"/>
@@ -98,6 +102,7 @@
             android:fontFamily="@font/ar_font"
             android:text="المدينة:"
             android:textSize="16dp"
+            android:textColor="@color/black"
             android:layout_marginStart="25dp"
             android:layout_marginEnd="25dp"
             android:layout_marginBottom="8dp"/>
@@ -118,6 +123,7 @@
             android:fontFamily="@font/ar_font"
             android:text="الحي:"
             android:textSize="16dp"
+            android:textColor="@color/black"
             android:layout_marginStart="25dp"
             android:layout_marginEnd="25dp"
             android:layout_marginBottom="8dp"/>
@@ -182,6 +188,7 @@
                 android:fontFamily="@font/ar_font"
                 android:text="الجنس:"
                 android:textSize="16dp"
+                android:textColor="@color/black"
                 android:layout_marginStart="25dp"
                 android:layout_marginEnd="25dp"
                 android:layout_marginBottom="8dp"/>

@@ -2,18 +2,21 @@ package com.gp.salik.activities;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.gp.salik.Model.App;
 import com.gp.salik.R;
-import com.gp.salik.api.TicketClient;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -21,19 +24,17 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
 public class TicketDetailsFragment extends Fragment {
 
     private View v;
     public static List<JSONObject> photosList = new ArrayList<>();
     public static List<JSONObject> ticketHistories = new ArrayList<>();
     public static List<JSONObject> userRating = new ArrayList<>();
+
+    private ImageView td_photo0, td_photo1, td_photo2, td_photo3;
+    private EditText td_desc;
+    private Spinner neighborhood_spinner;
+    private Button delete_ticket, eval_ticket;
 
 
     public TicketDetailsFragment() {
@@ -43,7 +44,7 @@ public class TicketDetailsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.activity_ticket, container, false);
+        v = inflater.inflate(R.layout.ticket_details_fragment, container, false);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             if (getActivity().getWindow().getDecorView().getLayoutDirection() == View.LAYOUT_DIRECTION_LTR) {
@@ -51,8 +52,27 @@ public class TicketDetailsFragment extends Fragment {
             }
         }
 
+        td_photo0 = v.findViewById(R.id.td_photo0);
+        td_photo1 = v.findViewById(R.id.td_photo1);
+        td_photo2 = v.findViewById(R.id.td_photo2);
+        td_photo3 = v.findViewById(R.id.td_photo3);
+        td_desc = v.findViewById(R.id.td_description);
+        neighborhood_spinner = v.findViewById(R.id.td_spinner);
+        delete_ticket = v.findViewById(R.id.deleteTicket);
+        eval_ticket = v.findViewById(R.id.evalTicket);
+
+        td_desc.setEnabled(false);
+        neighborhood_spinner.setEnabled(false);
+
+        if(App.opened == false) {
+            delete_ticket.setVisibility(View.GONE);
+        } else if(App.opened) {
+            eval_ticket.setVisibility(View.GONE);
+        }
+
         System.out.println(App.TICKET);
         int ticket_id = Integer.parseInt(App.TICKET);
+        System.out.println(ticket_id);
 
         try {
             JSONObject ticket = App.ticketListMap.get(ticket_id);
@@ -65,7 +85,7 @@ public class TicketDetailsFragment extends Fragment {
 
 
 
-            Toast.makeText(getActivity().getApplicationContext(), "photo name: " + photo.getString("photo_name"), Toast.LENGTH_LONG).show();
+            //Toast.makeText(getActivity().getApplicationContext(), "photo name: " + photo.getString("photo_name"), Toast.LENGTH_LONG).show();
 
         } catch (Exception e) {
             Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
@@ -74,6 +94,27 @@ public class TicketDetailsFragment extends Fragment {
 
 
 //        getTicket(ticket_id);
+
+        delete_ticket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO: delete ticket
+                FragmentTransaction trans = getFragmentManager()
+                        .beginTransaction();
+                trans.replace(R.id.root_frame, new EvaluateTicketFragment());
+                trans.commit();
+            }
+        });
+
+        eval_ticket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentTransaction trans = getFragmentManager()
+                        .beginTransaction();
+                trans.replace(R.id.root_frame, new EvaluateTicketFragment());
+                trans.commit();
+            }
+        });
 
         return v;
     }

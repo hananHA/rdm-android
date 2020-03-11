@@ -22,6 +22,7 @@ public class App {
     public static String TICKET = null;
     public static List<JSONObject> ticketArrayList = new ArrayList<>();
     public static HashMap<Integer, JSONObject> ticketListMap = new HashMap<Integer, JSONObject>();
+    public static boolean opened = false;
 
 
     public static OkHttpClient.Builder okHttpClientCall() {

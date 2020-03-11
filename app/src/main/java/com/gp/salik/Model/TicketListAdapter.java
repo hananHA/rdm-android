@@ -91,6 +91,11 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
                 public void onClick(View view) {
                     String id = ticket_id.getText().toString();
                     App.TICKET = id;
+                    if(status.getText().toString().contains("OPEN")) {
+                        App.opened = true;
+                    } else {
+                        App.opened = false;
+                    }
                     FragmentTransaction trans = ((MainNavActivity)mCtx).getSupportFragmentManager()
                             .beginTransaction();
                     trans.replace(R.id.root_frame, new TicketDetailsFragment());
