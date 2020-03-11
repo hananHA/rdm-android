@@ -18,7 +18,6 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name="com.gp.salik.activities.MainNavActivity"></activity>
-        <activity android:name="com.gp.salik.activities.TicketDetailsFragment" />
         <activity android:name="com.gp.salik.activities.ForgetPassActivity" />
 
         <provider
@@ -30,8 +29,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-
-        <activity android:name="com.gp.salik.activities.TicketListActivity" />
 
         <meta-data
             android:name="com.google.android.gms.version"

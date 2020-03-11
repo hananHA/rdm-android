@@ -1,16 +1,13 @@
 package com.gp.salik.Model;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 
 import com.gp.salik.R;
 import com.gp.salik.activities.MainNavActivity;
@@ -20,11 +17,9 @@ import java.util.List;
 
 public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.TicketListViewHolder> {
 
-    private ViewPager viewPager;
-    private ViewPagerAdapter vpadapter;
-
     //this context we will use to inflate the layout
     private Context mCtx;
+    View v;
 
     //we are storing all the products in a list
     private List<TicketList> ticketLists;
@@ -41,6 +36,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
         //inflating and returning our view holder
         LayoutInflater inflater = LayoutInflater.from(mCtx);
         View view = inflater.inflate(R.layout.ticket_row, null);
+        v = view;
         return new TicketListViewHolder(view);
     }
 
@@ -50,6 +46,17 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
         TicketList ticket = ticketLists.get(position);
 
         //binding the data with the viewholder views
+        switch (ticket.getStatus()){
+            case "OPEN":
+                v.setBackgroundResource(R.drawable.opened_row_bg);
+                break;
+            case "ASSIGNED":
+                v.setBackgroundResource(R.drawable.assigned_row_bg);
+                break;
+            case "CLOSED":
+                v.setBackgroundResource(R.drawable.closed_row_bg);
+                break;
+        }
         holder.ticketInfo.setText(ticket.getDescription()); //String.valueOf(ticket.getId())
         holder.status.setText(ticket.getStatus());
         holder.date.setText("التصنيف: " + (ticket.getClassification()));
@@ -83,22 +90,11 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
                 @Override
                 public void onClick(View view) {
                     String id = ticket_id.getText().toString();
-
-                    Intent intent = new Intent(mCtx, TicketDetailsFragment.class);
-                    System.out.println("IDADAPTER" +id);
-                    viewPager = MainNavActivity.getViewPager();
-                    //vpadapter = new ViewPagerAdapter(((MainNavActivity)mCtx).getSupportFragmentManager(), id);
-                    //vpadapter = MainNavActivity.getViewPagerAdapter();
-                    //vpadapter.settID(id);
-                    //intent.putExtra("TICKET_ID", id);
-                    //viewPager.setAdapter(vpadapter);
                     App.TICKET = id;
-                    System.out.println(App.TICKET);
-                    viewPager.setCurrentItem(2);
-                    //mCtx.startActivity(intent);
-                    //MainNavActivity.openTicketDetails(id);
-
-
+                    FragmentTransaction trans = ((MainNavActivity)mCtx).getSupportFragmentManager()
+                            .beginTransaction();
+                    trans.replace(R.id.root_frame, new TicketDetailsFragment());
+                    trans.commit();
                 }
             });
 

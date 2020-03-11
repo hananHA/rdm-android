@@ -1,10 +1,8 @@
 package com.gp.salik.activities;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,7 +31,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class TicketDetailsFragment extends Fragment {
 
     private View v;
-    String tID;
     public static List<JSONObject> photosList = new ArrayList<>();
     public static List<JSONObject> ticketHistories = new ArrayList<>();
     public static List<JSONObject> userRating = new ArrayList<>();
@@ -42,9 +39,6 @@ public class TicketDetailsFragment extends Fragment {
     public TicketDetailsFragment() {
     }
 
-    /*public TicketDetailsFragment(String tID) {
-        this.tID = tID;
-    }*/
 
     @Nullable
     @Override

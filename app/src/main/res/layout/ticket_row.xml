@@ -7,7 +7,7 @@
     android:paddingRight="20dp"
     android:paddingBottom="20dp"
     android:paddingTop="20dp"
-    android:background="@drawable/ticket_row_bg"
+    android:background="@drawable/closed_row_bg"
     android:descendantFocusability="blocksDescendants"
     android:layout_marginBottom="10dp">
 

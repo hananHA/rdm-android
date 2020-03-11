@@ -3,11 +3,11 @@ package com.gp.salik.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -87,26 +87,24 @@ public class MainNavActivity extends AppCompatActivity {
         ticketsCircle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                vpadapter = new ViewPagerAdapter(getSupportFragmentManager());
-                viewPager.setAdapter(vpadapter);
-                viewPager.setCurrentItem(0);
+                //vpadapter = new ViewPagerAdapter(getSupportFragmentManager());
+                //viewPager.setAdapter(vpadapter);
+                FragmentTransaction trans = getSupportFragmentManager()
+                        .beginTransaction();
+                trans.replace(R.id.root_frame, new TicketsListFragment());
+                trans.commit();
             }
         });
 
         settingsCircle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewPager.setCurrentItem(1);
+                FragmentTransaction trans = getSupportFragmentManager()
+                        .beginTransaction();
+                trans.replace(R.id.root_frame, new AccountSettingsFragment());
+                trans.commit();
             }
         });
-    }
-
-    public static ViewPager getViewPager() {
-        return viewPager;
-    }
-
-    public static ViewPagerAdapter getViewPagerAdapter() {
-        return vpadapter;
     }
 
 }
