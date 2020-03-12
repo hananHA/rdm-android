@@ -62,6 +62,21 @@ public interface TicketClient {
             @Header("Authorization") String auth
     );
 
+    @POST("rate")
+    @FormUrlEncoded
+    @Headers({
+            "Accept: application/json",
+
+    })
+    Call<ResponseBody> rateTicket(
+
+            @Field("ticket_id") int ticket_id,
+            @Field("comment") String comment,
+            @Field("rating") int rating,
+            @Header("Authorization") String auth
+    );
+
+
 
 }
 

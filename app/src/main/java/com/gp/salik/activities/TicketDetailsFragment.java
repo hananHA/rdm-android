@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,11 +37,13 @@ public class TicketDetailsFragment extends Fragment {
     private boolean isImageFitToScreen;
 
 
-    private int ticket_id = Integer.parseInt(App.TICKET);
+    public int ticket_id = Integer.parseInt(App.TICKET);
+    public String comment = null;
+    public int rating = 0;
     private JSONObject ticket = App.ticketListMap.get(ticket_id);
     private ImageView td_photo0, td_photo1, td_photo2, td_photo3;
     private EditText td_neighborhood, td_desc;
-    private Button delete_ticket, eval_ticket, showEval;
+    private Button delete_ticket, eval_ticket, showEval, other_status;
 
 
     public TicketDetailsFragment() {
@@ -64,10 +67,12 @@ public class TicketDetailsFragment extends Fragment {
         delete_ticket = v.findViewById(R.id.deleteTicket);
         eval_ticket = v.findViewById(R.id.evalTicket);
         showEval = v.findViewById(R.id.showEval);
+        other_status = v.findViewById(R.id.workInTicket);
 
         delete_ticket.setVisibility(View.INVISIBLE);
         eval_ticket.setVisibility(View.INVISIBLE);
         showEval.setVisibility(View.INVISIBLE);
+        other_status.setVisibility(View.INVISIBLE);
 
 
         td_desc.setEnabled(false);
@@ -84,10 +89,12 @@ public class TicketDetailsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //TODO: delete ticket
-                FragmentTransaction trans = getFragmentManager()
-                        .beginTransaction();
-                trans.replace(R.id.root_frame, new EvaluateTicketFragment());
-                trans.commit();
+                Toast.makeText(getActivity().getApplicationContext(), " كود حذف التذكرة هنا ", Toast.LENGTH_LONG).show();
+
+//                FragmentTransaction trans = getFragmentManager()
+//                        .beginTransaction();
+//                trans.replace(R.id.root_frame, new EvaluateTicketFragment());
+//                trans.commit();
             }
         });
 
@@ -96,7 +103,17 @@ public class TicketDetailsFragment extends Fragment {
             public void onClick(View view) {
                 FragmentTransaction trans = getFragmentManager()
                         .beginTransaction();
-                trans.replace(R.id.root_frame, new EvaluateTicketFragment());
+                trans.replace(R.id.root_frame, new EvaluateTicketFragment(ticket_id, false));
+                trans.commit();
+            }
+        });
+
+        showEval.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentTransaction trans = getFragmentManager()
+                        .beginTransaction();
+                trans.replace(R.id.root_frame, new EvaluateTicketFragment(comment, ticket_id, rating, true));
                 trans.commit();
             }
         });
@@ -167,8 +184,7 @@ public class TicketDetailsFragment extends Fragment {
     }
 
     private void getStatusRateDelete() {
-        String comment = null;
-        int rating = 0;
+
         String status = null;
 
         try {
@@ -179,10 +195,13 @@ public class TicketDetailsFragment extends Fragment {
                 delete_ticket.setVisibility(View.VISIBLE);
             } else if (rate.isNull(0) && status.equalsIgnoreCase("CLOSED")) {
                 eval_ticket.setVisibility(View.VISIBLE);
-            } else {
+            } else if (!rate.isNull(0)) {
                 comment = rate.getJSONObject(0).getString("comment");
                 rating = Integer.parseInt(rate.getJSONObject(0).getString("rating"));
                 showEval.setVisibility(View.VISIBLE);
+
+            } else {
+                other_status.setVisibility(View.VISIBLE);
 
             }
 
@@ -191,6 +210,10 @@ public class TicketDetailsFragment extends Fragment {
             Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
 
         }
+    }
+
+    private void deleteTicket() {
+
     }
 
 

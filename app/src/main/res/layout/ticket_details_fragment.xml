@@ -184,6 +184,20 @@
             android:layout_alignParentBottom="true"/>
 
         <Button
+            android:id="@+id/workInTicket"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:background="@drawable/rounded_red"
+            android:fontFamily="@font/ar_font"
+            android:stateListAnimator="@null"
+            android:text="جاري العمل على البلاغ"
+            android:textColor="@color/white"
+            android:textSize="30dp"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="655dp"
+            android:layout_alignParentBottom="true"/>
+
+        <Button
             android:id="@+id/evalTicket"
             android:layout_width="match_parent"
             android:layout_height="75dp"

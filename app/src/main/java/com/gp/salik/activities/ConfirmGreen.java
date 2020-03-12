@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.gp.salik.Model.App;
 import com.gp.salik.R;
 
 public class ConfirmGreen extends Activity {
@@ -48,6 +49,7 @@ public class ConfirmGreen extends Activity {
         getWindow().setAttributes(wlp);
 
         confirm_ok = findViewById(R.id.confirm_ok);
+        confirm_ok.setText(App.confirmMessage);
         confirm_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

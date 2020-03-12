@@ -116,7 +116,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/td_description"
+                android:id="@+id/td_comment"
                 android:layout_width="match_parent"
                 android:layout_height="90dp"
                 android:layout_marginStart="25dp"
@@ -140,14 +140,16 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+
+
         <Button
-            android:id="@+id/deleteTicket"
+            android:id="@+id/evlTicket"
             android:layout_width="match_parent"
             android:layout_height="75dp"
-            android:background="@drawable/rounded_red"
+            android:background="@drawable/rounded_green"
             android:fontFamily="@font/ar_font"
             android:stateListAnimator="@null"
-            android:text="حذف التذكرة"
+            android:text="اعتماد التقييم"
             android:textColor="@color/white"
             android:textSize="30dp"
             tools:layout_editor_absoluteX="16dp"
@@ -155,13 +157,13 @@
             android:layout_alignParentBottom="true"/>
 
         <Button
-            android:id="@+id/evalTicket"
+            android:id="@+id/backTicket"
             android:layout_width="match_parent"
             android:layout_height="75dp"
             android:background="@drawable/rounded_green"
             android:fontFamily="@font/ar_font"
             android:stateListAnimator="@null"
-            android:text="اعتماد التقييم"
+            android:text="العودة للتذكرة"
             android:textColor="@color/white"
             android:textSize="30dp"
             tools:layout_editor_absoluteX="16dp"
