@@ -60,6 +60,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -280,6 +281,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 try {
                     if (response.isSuccessful()) {
                         App.listTicketResponse = response.body().toString();
+                        JSONArray jsonArray = new JSONArray(response.body().toString());
+                        App.TICKET_NUM = jsonArray.length();
+
                         Intent intent = new Intent(MainActivity.this, MainNavActivity.class);
                         startActivity(intent);
 //                      Log.d("resList", res);

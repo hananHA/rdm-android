@@ -4,19 +4,23 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.gp.salik.Model.App;
 import com.gp.salik.R;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -27,14 +31,19 @@ import java.util.List;
 public class TicketDetailsFragment extends Fragment {
 
     private View v;
-    public static List<JSONObject> photosList = new ArrayList<>();
     public static List<JSONObject> ticketHistories = new ArrayList<>();
     public static List<JSONObject> userRating = new ArrayList<>();
+    public static List<ImageView> td_photoList = new ArrayList<>();
+    private boolean isImageFitToScreen;
 
+
+    public int ticket_id = Integer.parseInt(App.TICKET);
+    public String comment = null;
+    public int rating = 0;
+    private JSONObject ticket = App.ticketListMap.get(ticket_id);
     private ImageView td_photo0, td_photo1, td_photo2, td_photo3;
-    private EditText td_desc;
-    private Spinner neighborhood_spinner;
-    private Button delete_ticket, eval_ticket;
+    private EditText td_neighborhood, td_desc;
+    private Button delete_ticket, eval_ticket, showEval, other_status;
 
 
     public TicketDetailsFragment() {
@@ -52,57 +61,40 @@ public class TicketDetailsFragment extends Fragment {
             }
         }
 
-        td_photo0 = v.findViewById(R.id.td_photo0);
-        td_photo1 = v.findViewById(R.id.td_photo1);
-        td_photo2 = v.findViewById(R.id.td_photo2);
-        td_photo3 = v.findViewById(R.id.td_photo3);
+
         td_desc = v.findViewById(R.id.td_description);
-        neighborhood_spinner = v.findViewById(R.id.td_spinner);
+        td_neighborhood = v.findViewById(R.id.td_neighborhood);
         delete_ticket = v.findViewById(R.id.deleteTicket);
         eval_ticket = v.findViewById(R.id.evalTicket);
+        showEval = v.findViewById(R.id.showEval);
+        other_status = v.findViewById(R.id.workInTicket);
+
+        delete_ticket.setVisibility(View.INVISIBLE);
+        eval_ticket.setVisibility(View.INVISIBLE);
+        showEval.setVisibility(View.INVISIBLE);
+        other_status.setVisibility(View.INVISIBLE);
+
 
         td_desc.setEnabled(false);
-        neighborhood_spinner.setEnabled(false);
-
-        if(App.opened == false) {
-            delete_ticket.setVisibility(View.GONE);
-        } else if(App.opened) {
-            eval_ticket.setVisibility(View.GONE);
-        }
-
-        System.out.println(App.TICKET);
-        int ticket_id = Integer.parseInt(App.TICKET);
-        System.out.println(ticket_id);
-
-        try {
-            JSONObject ticket = App.ticketListMap.get(ticket_id);
-
-            JSONArray photos = ticket.getJSONArray("photos");
-            for (int i = 0 ; i < photos.length() ; i++) {
-                JSONObject photo = (JSONObject) photos.get(0);
-                
-            }
+        td_neighborhood.setEnabled(false);
 
 
+        loadImage();
+        td_desc.setText(getDesc());
+        td_neighborhood.setText(getNeighborhood());
+        getStatusRateDelete();
 
-            //Toast.makeText(getActivity().getApplicationContext(), "photo name: " + photo.getString("photo_name"), Toast.LENGTH_LONG).show();
-
-        } catch (Exception e) {
-            Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-
-        }
-
-
-//        getTicket(ticket_id);
 
         delete_ticket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //TODO: delete ticket
-                FragmentTransaction trans = getFragmentManager()
-                        .beginTransaction();
-                trans.replace(R.id.root_frame, new EvaluateTicketFragment());
-                trans.commit();
+                Toast.makeText(getActivity().getApplicationContext(), " كود حذف التذكرة هنا ", Toast.LENGTH_LONG).show();
+
+//                FragmentTransaction trans = getFragmentManager()
+//                        .beginTransaction();
+//                trans.replace(R.id.root_frame, new EvaluateTicketFragment());
+//                trans.commit();
             }
         });
 
@@ -111,7 +103,17 @@ public class TicketDetailsFragment extends Fragment {
             public void onClick(View view) {
                 FragmentTransaction trans = getFragmentManager()
                         .beginTransaction();
-                trans.replace(R.id.root_frame, new EvaluateTicketFragment());
+                trans.replace(R.id.root_frame, new EvaluateTicketFragment(ticket_id, false));
+                trans.commit();
+            }
+        });
+
+        showEval.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentTransaction trans = getFragmentManager()
+                        .beginTransaction();
+                trans.replace(R.id.root_frame, new EvaluateTicketFragment(comment, ticket_id, rating, true));
                 trans.commit();
             }
         });
@@ -119,66 +121,102 @@ public class TicketDetailsFragment extends Fragment {
         return v;
     }
 
-//    public void getTicket(final int ticket_id) {
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl(TicketClient.BASE_URL)
-//                //Here we are using the GsonConverterFactory to directly convert json data to object
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .client(App.okHttpClientCall().build())
-//                .build();
-//
-//        TicketClient api = retrofit.create(TicketClient.class);
-//        Call<ResponseBody> call = api.getTicket(ticket_id, "Bearer " + App.token);
-//
-//
-//        call.enqueue(new Callback<ResponseBody>() {
-//            @Override
-//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-//                try {
-//                    if (response.isSuccessful()) {
-//                        String res = response.body().string();
-//                        JSONObject obj = new JSONObject(res);
-//                        JSONObject ticket = (JSONObject) obj.get("ticket");
-//                        JSONObject location = (JSONObject) obj.get("ticket");
-//
-//                        JSONArray photos = new JSONArray();
-//                        photos.put(obj.get("photos"));
-////                        for (int i = 0; i < photos.length(); i++) {
-////                            JSONObject photo = photos.getJSONObject(i);
-////                            photosList.add(i, photo);
-////                        }
-//
-//                        JSONArray ticketHistories = new JSONArray();
-//                        photos.put(obj.get("ticketHistories"));
-//
-//                        JSONArray userRating = new JSONArray();
-//                        photos.put(obj.get("userRating"));
-//
-//
-//                        Toast.makeText(getActivity().getApplicationContext(), "id: " + ticket_id, Toast.LENGTH_LONG).show();
-//
-//                    } else {
-//                        if (response.code() == 422 || response.code() == 401 || response.code() == 500) {
-//                            Log.e("error list ticket ", "error code is: " + response.code());
-//
-//                        }
-//                    }
-//
-//                } catch (Exception e) {
-//                    Log.e("error when list ticket", e.getMessage());
-//
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ResponseBody> call, Throwable t) {
-//                Toast.makeText(getActivity().getApplicationContext(), "الرجاء التحقق من اتصالك بالإنترنت والمحاولة لاحقا ", Toast.LENGTH_LONG).show();
-//
-//
-//            }
-//        });
-//
-//
-//    }
+    private void loadImage() {
+        td_photoList.add(0, (ImageView) v.findViewById(R.id.td_photo0));
+        td_photoList.add(1, (ImageView) v.findViewById(R.id.td_photo1));
+        td_photoList.add(2, (ImageView) v.findViewById(R.id.td_photo2));
+        td_photoList.add(3, (ImageView) v.findViewById(R.id.td_photo3));
+        for (int i = 0; i < td_photoList.size(); i++) {
+            td_photoList.get(i).setVisibility(View.INVISIBLE);
+        }
+        try {
+
+            JSONArray photos = ticket.getJSONArray("photos");
+            for (int i = 0; i < photos.length(); i++) {
+                td_photoList.get(i).setVisibility(View.VISIBLE);
+                String URL = "http://www.ai-rdm.website/public/storage/photos/";
+                String role_id = ((JSONObject) photos.get(i)).get("role_id").toString();
+                Log.e("role id", role_id);
+                String image_name = ((JSONObject) photos.get(i)).get("photo_name").toString();
+                String full_path = URL + image_name;
+                Picasso.get().load(full_path).into(td_photoList.get(i));
+            }
+            td_photoList.clear();
+
+
+        } catch (Exception e) {
+            Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+
+        }
+
+    }
+
+    private String getDesc() {
+
+
+        String desc = null;
+        try {
+            desc = ticket.getJSONObject("ticket").getString("description");
+
+        } catch (Exception e) {
+            desc = null;
+        }
+        if (!desc.equalsIgnoreCase("null")) {
+            return desc;
+        } else {
+            return "لا يوجد وصف";
+        }
+    }
+
+    private String getNeighborhood() {
+
+
+        String neighborhood = null;
+        try {
+            neighborhood = ticket.getJSONArray("location").getJSONObject(0).getString("neighborhood");
+
+        } catch (Exception e) {
+            neighborhood = null;
+        }
+        if (!neighborhood.equalsIgnoreCase("null")) {
+            return neighborhood;
+        } else {
+            return "لا يوجد حي";
+        }
+    }
+
+    private void getStatusRateDelete() {
+
+        String status = null;
+
+        try {
+            status = ticket.getJSONObject("ticket").getString("status");
+            JSONArray rate = ticket.getJSONArray("userRating");
+
+            if (status.equalsIgnoreCase("OPEN")) {
+                delete_ticket.setVisibility(View.VISIBLE);
+            } else if (rate.isNull(0) && status.equalsIgnoreCase("CLOSED")) {
+                eval_ticket.setVisibility(View.VISIBLE);
+            } else if (!rate.isNull(0)) {
+                comment = rate.getJSONObject(0).getString("comment");
+                rating = Integer.parseInt(rate.getJSONObject(0).getString("rating"));
+                showEval.setVisibility(View.VISIBLE);
+
+            } else {
+                other_status.setVisibility(View.VISIBLE);
+
+            }
+
+
+        } catch (Exception e) {
+            Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+
+        }
+    }
+
+    private void deleteTicket() {
+
+    }
+
+
 }

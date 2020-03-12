@@ -14,6 +14,8 @@ import com.gp.salik.R;
 import com.gp.salik.api.TicketClient;
 import com.google.gson.JsonArray;
 
+import org.json.JSONArray;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -31,6 +33,10 @@ public class SplashActivity extends AppCompatActivity {
         Log.d("User Token: ", "user_token: " + App.token + "Null !");
         App.sharedPreferences = getSharedPreferences("user_info", Context.MODE_PRIVATE);
         App.token = App.sharedPreferences.getString("token", null);
+        App.USER_NAME = App.sharedPreferences.getString("name", null);
+        App.USER_EMAIL = App.sharedPreferences.getString("email", null);
+        App.USER_PHONE = App.sharedPreferences.getString("phone", null);
+
         if (App.token != null) {
             listTicket();
 
@@ -66,6 +72,8 @@ public class SplashActivity extends AppCompatActivity {
                 try {
                     if (response.isSuccessful()) {
                         App.listTicketResponse = response.body().toString();
+                        JSONArray jsonArray = new JSONArray(response.body().toString());
+                        App.TICKET_NUM = jsonArray.length();
                         Intent mainIntent = new Intent(SplashActivity.this, MainActivity.class);
                         SplashActivity.this.startActivity(mainIntent);
                         SplashActivity.this.finish();

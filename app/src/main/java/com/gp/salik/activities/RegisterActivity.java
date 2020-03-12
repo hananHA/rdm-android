@@ -20,6 +20,7 @@ import com.gp.salik.api.UserClient;
 
 import org.json.JSONObject;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -41,7 +42,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            if (getWindow().getDecorView().getLayoutDirection() == View.LAYOUT_DIRECTION_LTR){
+            if (getWindow().getDecorView().getLayoutDirection() == View.LAYOUT_DIRECTION_LTR) {
                 getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
             }
         }
@@ -103,17 +104,49 @@ public class RegisterActivity extends AppCompatActivity {
                     //now making the call object
                     //Here we are using the api method that we created inside the api interface
                     //Here the json data is add to a hash map with key data
-                    Call<User> call = api.postRegister(e, p, pc);
-                    call.enqueue(new Callback<User>() {
+                    Call<ResponseBody> call = api.postRegister(e, p, pc);
+                    call.enqueue(new Callback<ResponseBody>() {
                         @Override
-                        public void onResponse(Call<User> call, Response<User> response) {
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                             if (response.isSuccessful()) {
-                                User user = response.body();
-                                App.token = user.getAccess_token();
 
-                                SharedPreferences.Editor editUserInfo = App.sharedPreferences.edit();
-                                editUserInfo.putString("token", App.token);
-                                editUserInfo.apply();
+                                try {
+                                    JSONObject user = new JSONObject(response.body().string());
+                                    App.token = user.getString("access_token");
+                                    if (user.getJSONObject("user_data").getString("name").isEmpty()) {
+                                        App.USER_NAME = null;
+
+                                    } else if (user.getJSONObject("user_data").getString("email").isEmpty()) {
+                                        App.USER_EMAIL = null;
+
+                                    } else if (user.getJSONObject("user_data").getString("phone").isEmpty()) {
+                                        App.USER_PHONE = null;
+                                    } else {
+                                        App.USER_NAME = user.getJSONObject("user_data").getString("name");
+                                        App.USER_EMAIL = user.getJSONObject("user_data").getString("email");
+                                        App.USER_PHONE = user.getJSONObject("user_data").getString("phone");
+
+
+                                    }
+
+                                    SharedPreferences.Editor editUserInfo = App.sharedPreferences.edit();
+                                    editUserInfo.putString("token", App.token);
+                                    editUserInfo.putString("name", App.USER_NAME);
+                                    editUserInfo.putString("email", App.USER_EMAIL);
+                                    editUserInfo.putString("phone", App.USER_PHONE);
+                                    editUserInfo.apply();
+
+
+                                    Log.e("user info", "good " + App.USER_NAME);
+
+
+                                } catch (Exception e1) {
+                                    Toast.makeText(getApplicationContext(), e1.getMessage(), Toast.LENGTH_LONG).show();
+                                    Log.e("user info", e1.getMessage());
+
+                                }
+
+
                                 Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                                 startActivity(intent);
                                 Toast.makeText(getApplicationContext(), " تم تسجيلك بنجاح ", Toast.LENGTH_LONG).show();
@@ -177,7 +210,7 @@ public class RegisterActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<User> call, Throwable t) {
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
                             Toast.makeText(getApplicationContext(), "الرجاء التأكد من اتصالك بالإنترنت", Toast.LENGTH_LONG).show();
 
 
