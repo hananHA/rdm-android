@@ -21,6 +21,8 @@ import com.gp.salik.Model.App;
 import com.gp.salik.R;
 import com.gp.salik.api.TicketClient;
 
+import org.json.JSONArray;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -110,6 +112,7 @@ public class EvaluateTicketFragment extends Fragment {
                     Toast.makeText(getActivity().getApplicationContext(), "الرجاء اختيار نجمة على الأقل للتقييم ", Toast.LENGTH_LONG).show();
 
                 } else {
+                    App.confirmMessage = "تأكيد اعتماد التقييم";
                     Intent intent = new Intent(getActivity(), ConfirmGreen.class);
                     startActivity(intent);
                     rateTicket();
@@ -138,7 +141,6 @@ public class EvaluateTicketFragment extends Fragment {
                 try {
                     if (response.isSuccessful()) {
                         //TODO: when add rate successfully refresh all ticket list
-                        App.confirmMessage = "تأكيد اعتماد التقييم";
                         listTicket();
 
 
@@ -180,6 +182,8 @@ public class EvaluateTicketFragment extends Fragment {
                 try {
                     if (response.isSuccessful()) {
                         App.listTicketResponse = response.body().toString();
+                        JSONArray jsonArray = new JSONArray(response.body().toString());
+                        App.TICKET_NUM = jsonArray.length();
 
                         Intent intent = new Intent(getActivity(), MainNavActivity.class);
                         startActivity(intent);
@@ -193,11 +197,15 @@ public class EvaluateTicketFragment extends Fragment {
 
 
                     } else {
-                        if (response.code() == 422 || response.code() == 401 || response.code() == 500 || response.code() == 400) {
+                        if (response.code() == 401 || response.code() == 500 || response.code() == 400) {
 
                             Log.e("error list ticket ", "error code is: " + response.code() + "ticket_id is: " + ticket_id);
                             Toast.makeText(getActivity().getApplicationContext(), "الرجاء التحقق من الحساب ", Toast.LENGTH_LONG).show();
 
+
+                        }
+                        if (response.code() == 422) {
+                            Toast.makeText(getActivity().getApplicationContext(), "الرجاء التحقق من صيغة رقم الجوال ", Toast.LENGTH_LONG).show();
 
                         }
                     }

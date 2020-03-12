@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import androidx.fragment.app.FragmentTransaction;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.gp.salik.Model.App;
@@ -27,7 +29,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainNavActivity extends AppCompatActivity {
 
     static ViewPager viewPager;
-    TextView logoutButton, backButton, helloCircle, settingsCircle, ticketsCircle;
+    TextView logoutButton, backButton, helloCircle, settingsCircle, ticketsCircle, user_name, tickets_num;
     static ViewPagerAdapter vpadapter;
 
     @Override
@@ -36,7 +38,7 @@ public class MainNavActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main_nav);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            if (getWindow().getDecorView().getLayoutDirection() == View.LAYOUT_DIRECTION_LTR){
+            if (getWindow().getDecorView().getLayoutDirection() == View.LAYOUT_DIRECTION_LTR) {
                 getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
             }
         }
@@ -48,9 +50,20 @@ public class MainNavActivity extends AppCompatActivity {
         helloCircle = findViewById(R.id.hello_circle);
         settingsCircle = findViewById(R.id.settings_circle);
         ticketsCircle = findViewById(R.id.tickets_circle);
+        user_name = findViewById(R.id.user_name);
+        tickets_num = findViewById(R.id.tickets_num);
+        tickets_num.setText(String.valueOf(App.TICKET_NUM));
 
         viewPager = findViewById(R.id.viewpager);
         viewPager.setAdapter(vpadapter);
+
+        if (App.USER_NAME == null || App.USER_NAME.equalsIgnoreCase("null")) {
+            user_name.setText("");
+
+        } else {
+            user_name.setText(App.USER_NAME);
+        }
+
 
         viewPager.setOnTouchListener(new View.OnTouchListener() {
             @Override

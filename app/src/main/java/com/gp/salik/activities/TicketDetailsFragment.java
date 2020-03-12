@@ -135,6 +135,8 @@ public class TicketDetailsFragment extends Fragment {
             for (int i = 0; i < photos.length(); i++) {
                 td_photoList.get(i).setVisibility(View.VISIBLE);
                 String URL = "http://www.ai-rdm.website/public/storage/photos/";
+                String role_id = ((JSONObject) photos.get(i)).get("role_id").toString();
+                Log.e("role id", role_id);
                 String image_name = ((JSONObject) photos.get(i)).get("photo_name").toString();
                 String full_path = URL + image_name;
                 Picasso.get().load(full_path).into(td_photoList.get(i));

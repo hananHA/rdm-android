@@ -35,6 +35,7 @@ import com.gp.salik.Model.Neighborhood;
 import com.gp.salik.R;
 import com.gp.salik.api.TicketClient;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -86,7 +87,7 @@ public class AddTicketActivity extends Activity {
         setContentView(R.layout.activity_add_ticket);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            if (getWindow().getDecorView().getLayoutDirection() == View.LAYOUT_DIRECTION_LTR){
+            if (getWindow().getDecorView().getLayoutDirection() == View.LAYOUT_DIRECTION_LTR) {
                 getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
             }
         }
@@ -97,10 +98,10 @@ public class AddTicketActivity extends Activity {
         int width = dm.widthPixels;
         int height = dm.heightPixels;
 
-        if(height > 1900) {
-            getWindow().setLayout((int)(width * 1.), (int)(height * .58));
+        if (height > 1900) {
+            getWindow().setLayout((int) (width * 1.), (int) (height * .58));
         } else {
-            getWindow().setLayout((int)(width * 1.), (int)(height * .7));
+            getWindow().setLayout((int) (width * 1.), (int) (height * .7));
         }
 
         WindowManager.LayoutParams wlp = getWindow().getAttributes();
@@ -134,7 +135,7 @@ public class AddTicketActivity extends Activity {
                     latitude = Double.parseDouble(MainActivity.lat);
                     longitude = Double.parseDouble(MainActivity.lng);
                 }
-                if(canSend) {
+                if (canSend) {
                     Intent intent = new Intent(AddTicketActivity.this, ConfirmGreen.class);
                     startActivity(intent);
                 }
@@ -201,17 +202,17 @@ public class AddTicketActivity extends Activity {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         //Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-        // Create the File where the photo should go
+            // Create the File where the photo should go
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
                 // Error occurred while creating the File
             }
-        // Continue only if the File was successfully created
+            // Continue only if the File was successfully created
             if (photoFile != null) {
                 //Uri photoURI = FileProvider.getUriForFile(this, "com.camera.app.fileprovider", photoFile);
                 photoURI = FileProvider.getUriForFile(Objects.requireNonNull(getApplicationContext()),
-                  BuildConfig.APPLICATION_ID + ".provider", photoFile);
+                        BuildConfig.APPLICATION_ID + ".provider", photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
             }
@@ -251,10 +252,10 @@ public class AddTicketActivity extends Activity {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                //JSONObject res = new JSONObject(response.body().to());
-                //String message = response.body().toString();
-                Toast.makeText(getApplicationContext(), "تمت إضافة التذكرة بنجاح !", Toast.LENGTH_LONG).show();
-                listTicket();
+                    //JSONObject res = new JSONObject(response.body().to());
+                    //String message = response.body().toString();
+                    Toast.makeText(getApplicationContext(), "تمت إضافة التذكرة بنجاح !", Toast.LENGTH_LONG).show();
+                    listTicket();
                 } else {
                     if (response.code() == 422) {
                         try {
@@ -346,12 +347,12 @@ public class AddTicketActivity extends Activity {
     }
 
     public void getNeighborhoods() {
-          Retrofit retrofit = new Retrofit.Builder()
-                  .baseUrl(TicketClient.BASE_URL)
-                  //Here we are using the GsonConverterFactory to directly convert json data to object
-                  .addConverterFactory(GsonConverterFactory.create())
-                  .client(App.okHttpClientCall().build())
-                  .build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(TicketClient.BASE_URL)
+                //Here we are using the GsonConverterFactory to directly convert json data to object
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(App.okHttpClientCall().build())
+                .build();
 
         TicketClient api = retrofit.create(TicketClient.class);
 
@@ -383,7 +384,7 @@ public class AddTicketActivity extends Activity {
         });
     }
 
-    public static <T>List<T> getNeFromJson(String jsonString, Type type) {
+    public static <T> List<T> getNeFromJson(String jsonString, Type type) {
         if (!isValid(jsonString)) {
             return null;
         }
@@ -415,6 +416,8 @@ public class AddTicketActivity extends Activity {
                 try {
                     if (response.isSuccessful()) {
                         App.listTicketResponse = response.body().toString();
+                        JSONArray jsonArray = new JSONArray(response.body().toString());
+                        App.TICKET_NUM = jsonArray.length();
                         Intent intent = new Intent(AddTicketActivity.this, MainNavActivity.class);
                         startActivity(intent);
                         finish();
@@ -429,8 +432,10 @@ public class AddTicketActivity extends Activity {
                     Log.e("error when list ticket", e.getMessage());
                 }
             }
+
             @Override
-            public void onFailure(Call<JsonArray> call, Throwable t) {}
+            public void onFailure(Call<JsonArray> call, Throwable t) {
+            }
         });
     }
 
