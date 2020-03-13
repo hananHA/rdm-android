@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
@@ -20,8 +21,13 @@ import com.google.gson.JsonArray;
 import com.gp.salik.Model.App;
 import com.gp.salik.R;
 import com.gp.salik.api.TicketClient;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -39,6 +45,9 @@ public class EvaluateTicketFragment extends Fragment {
     private EditText td_comment;
     private RatingBar td_rating_bar;
     private Button evalTicket, backTicket;
+    private ImageView td_photo0, td_photo1, td_photo2, td_photo3;
+    private static List<ImageView> td_photoList = new ArrayList<>();
+    private JSONObject ticket;
 
 
     public EvaluateTicketFragment() {
@@ -74,11 +83,14 @@ public class EvaluateTicketFragment extends Fragment {
         evalTicket = v.findViewById(R.id.evlTicket);
         backTicket = v.findViewById(R.id.backTicket);
         if (isShow) {
+            ticket = App.ticketListMap.get(ticket_id);
+
             evalTicket.setVisibility(View.INVISIBLE);
             td_comment.setText(comment);
             td_comment.setEnabled(false);
             td_rating_bar.setRating(rating);
             td_rating_bar.setEnabled(false);
+            loadImage();
 
         } else {
             backTicket.setVisibility(View.INVISIBLE);
@@ -220,5 +232,43 @@ public class EvaluateTicketFragment extends Fragment {
 
             }
         });
+    }
+
+    private void loadImage() {
+        td_photoList.add(0, (ImageView) v.findViewById(R.id.fix_photo0));
+        td_photoList.add(1, (ImageView) v.findViewById(R.id.fix_photo1));
+        td_photoList.add(2, (ImageView) v.findViewById(R.id.fix_photo2));
+        td_photoList.add(3, (ImageView) v.findViewById(R.id.fix_photo3));
+        for (int i = 0; i < td_photoList.size(); i++) {
+            td_photoList.get(i).setVisibility(View.GONE);
+        }
+        try {
+
+
+            JSONArray photos = ticket.getJSONArray("photos");
+            for (int i = 0; i < photos.length(); i++) {
+                String URL = "http://www.ai-rdm.website/public/storage/photos/";
+                String role_id = ((JSONObject) photos.get(i)).get("role_id").toString();
+                Log.e("role id", role_id);
+                if (!role_id.equalsIgnoreCase("1")) {
+                    td_photoList.get(i).setVisibility(View.VISIBLE);
+                    String image_name = ((JSONObject) photos.get(i)).get("photo_name").toString();
+                    String full_path = URL + image_name;
+                    Log.e("path", full_path);
+
+                    Picasso.get().load(full_path).into(td_photoList.get(i));
+
+                } else {
+
+                    // this not photo from emp or comp or admin (from user so not fix photo)
+                }
+            }
+            td_photoList.clear();
+
+        } catch (Exception e) {
+            Log.e("load image", e.getMessage());
+
+        }
+
     }
 }

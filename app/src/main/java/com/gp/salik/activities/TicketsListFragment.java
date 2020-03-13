@@ -98,7 +98,10 @@ public class TicketsListFragment extends Fragment {
                                     App.ticketArrayList.get(i).getInt("id"),
                                     App.ticketArrayList.get(i).getString("description"),
                                     App.ticketArrayList.get(i).getString("status"),
-                                    App.ticketArrayList.get(i).getString("classification")
+                                    App.ticketArrayList.get(i).getString("classification"),
+                                    App.ticketArrayList.get(i).getString("status_ar"),
+                                    App.ticketArrayList.get(i).getString("created_at")
+
                             ));
                 }
 

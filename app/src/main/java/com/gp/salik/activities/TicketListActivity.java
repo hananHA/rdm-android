@@ -80,7 +80,9 @@ public class TicketListActivity extends AppCompatActivity {
                                     ticketArrayList.get(i).getInt("id"),
                                     ticketArrayList.get(i).getString("description"),
                                     ticketArrayList.get(i).getString("status"),
-                                    ticketArrayList.get(i).getString("classification")
+                                    App.ticketArrayList.get(i).getString("classification"),
+                                    App.ticketArrayList.get(i).getString("status_ar"),
+                                    App.ticketArrayList.get(i).getString("created_at")
                             ));
 
                 }

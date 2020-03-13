@@ -1,6 +1,7 @@
 package com.gp.salik.Model;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +47,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
         TicketList ticket = ticketLists.get(position);
 
         //binding the data with the viewholder views
-        switch (ticket.getStatus()){
+        switch (ticket.getStatus()) {
             case "OPEN":
                 v.setBackgroundResource(R.drawable.opened_row_bg);
                 break;
@@ -58,8 +59,9 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
                 break;
         }
         holder.ticketInfo.setText(ticket.getDescription()); //String.valueOf(ticket.getId())
-        holder.status.setText(ticket.getStatus());
-        holder.date.setText("التصنيف: " + (ticket.getClassification()));
+        holder.status.setText(ticket.getStatus_ar());
+        String date = "التاريخ: " + ticket.getCreated_at().substring(0, 10);
+        holder.date.setText(date);
         holder.ticket_id.setText(String.valueOf(ticket.getId()));
 
 
@@ -84,6 +86,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
             status = itemView.findViewById(R.id.ticket_status);
             date = itemView.findViewById(R.id.ticket_date);
             ticket_id = itemView.findViewById(R.id.ticket_id);
+
             ticket_id.setVisibility(View.GONE);
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -91,12 +94,12 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
                 public void onClick(View view) {
                     String id = ticket_id.getText().toString();
                     App.TICKET = id;
-                    if(status.getText().toString().contains("OPEN")) {
+                    if (status.getText().toString().contains("OPEN")) {
                         App.opened = true;
                     } else {
                         App.opened = false;
                     }
-                    FragmentTransaction trans = ((MainNavActivity)mCtx).getSupportFragmentManager()
+                    FragmentTransaction trans = ((MainNavActivity) mCtx).getSupportFragmentManager()
                             .beginTransaction();
                     trans.replace(R.id.root_frame, new TicketDetailsFragment());
                     trans.commit();
