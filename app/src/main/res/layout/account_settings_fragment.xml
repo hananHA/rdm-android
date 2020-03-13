@@ -101,6 +101,7 @@
             android:textColor="@color/light_gray" />
 
         <TextView
+            android:id="@+id/text_city"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="25dp"

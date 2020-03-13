@@ -246,21 +246,31 @@ public class EvaluateTicketFragment extends Fragment {
 
 
             JSONArray photos = ticket.getJSONArray("photos");
+            int x = 0;
             for (int i = 0; i < photos.length(); i++) {
                 String URL = "http://www.ai-rdm.website/public/storage/photos/";
                 String role_id = ((JSONObject) photos.get(i)).get("role_id").toString();
                 Log.e("role id", role_id);
+                boolean plus = false;
                 if (!role_id.equalsIgnoreCase("1")) {
-                    td_photoList.get(i).setVisibility(View.VISIBLE);
+
+                    td_photoList.get(x).setVisibility(View.VISIBLE);
                     String image_name = ((JSONObject) photos.get(i)).get("photo_name").toString();
                     String full_path = URL + image_name;
                     Log.e("path", full_path);
 
-                    Picasso.get().load(full_path).into(td_photoList.get(i));
+                    Picasso.get().load(full_path).into(td_photoList.get(x));
+                    plus = true;
+
 
                 } else {
+                    plus = false;
 
                     // this not photo from emp or comp or admin (from user so not fix photo)
+                }
+                if (plus) {
+                    x++;
+
                 }
             }
             td_photoList.clear();

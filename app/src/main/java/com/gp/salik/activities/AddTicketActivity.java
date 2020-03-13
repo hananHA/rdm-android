@@ -78,7 +78,7 @@ public class AddTicketActivity extends Activity {
     int city = 6; // city_id for Makkah is 6 in db;
     String resNeighborhoods;
     String[] spinnerArray;
-    public static List<Neighborhood> neighborhoodList = new ArrayList<>();
+    private static List<Neighborhood> neighborhoodList = new ArrayList<>();
     HashMap<Integer, String> spinnerMap = new HashMap<Integer, String>();
 
     @Override

@@ -10,19 +10,34 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import com.gp.salik.Model.App;
+import com.gp.salik.Model.Neighborhood;
 import com.gp.salik.R;
 import com.gp.salik.api.TicketClient;
 import com.gp.salik.api.UserClient;
 
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,9 +52,21 @@ public class AccountSettingsFragment extends Fragment {
     private View view;
 
     private EditText user_name, user_email, user_phone;
+    private TextView text_city;
+
     private Button edit_profile, save_changes;
     private RadioButton radio_male, radio_female;
+
+
     private Spinner s_neighborhood, s_city;
+    String resNeighborhoods;
+    String[] spinnerArray;
+    int city = 6; // city_id for Makkah is 6 in db;
+    HashMap<Integer, String> spinnerMap = new HashMap<Integer, String>();
+
+
+    private static List<Neighborhood> neighborhoodList = new ArrayList<>();
+
 
     public AccountSettingsFragment() {
     }
@@ -64,8 +91,14 @@ public class AccountSettingsFragment extends Fragment {
         radio_female = view.findViewById(R.id.radio_female);
         s_neighborhood = view.findViewById(R.id.spinner_neighborhood);
         s_city = view.findViewById(R.id.spinner_city);
+        text_city = view.findViewById(R.id.text_city);
+        // now only change neighborhood
+        text_city.setVisibility(View.GONE);
+        s_city.setVisibility(View.GONE);
+
 
         save_changes.setVisibility(View.GONE);
+        setNeighborhoods();
 
         //TODO: get data from the database
         if (App.USER_NAME == null || App.USER_NAME.equalsIgnoreCase("null")) {
@@ -81,6 +114,27 @@ public class AccountSettingsFragment extends Fragment {
             user_phone.setText(App.USER_PHONE);
 
         }
+
+        if (App.USER_GENDER == null || App.USER_PHONE.equalsIgnoreCase("null")) {
+            radio_male.setChecked(false);
+            radio_female.setChecked(false);
+
+        } else {
+            if (App.USER_GENDER.equalsIgnoreCase("MALE")) {
+                radio_male.setChecked(true);
+                radio_female.setChecked(false);
+
+
+            } else {
+                radio_male.setChecked(false);
+                radio_female.setChecked(true);
+
+            }
+
+
+        }
+
+
         user_email.setText(App.USER_EMAIL);
 
         //TODO: city and neighborhood spinners
@@ -100,12 +154,14 @@ public class AccountSettingsFragment extends Fragment {
                 edit_profile.setVisibility(View.GONE);
                 user_name.setEnabled(true);
                 user_phone.setEnabled(true);
+                s_neighborhood.setEnabled(true);
+                radio_male.setEnabled(true);
+                radio_female.setEnabled(true);
+
 //                user_email.setEnabled(true);
 //                user_phone.setEnabled(true);
 //                s_neighborhood.setEnabled(true);
 //                s_city.setEnabled(true);
-//                radio_male.setEnabled(true);
-//                radio_female.setEnabled(true);
 
                 user_name.setTextColor(getResources().getColor(R.color.gray));
                 user_email.setTextColor(getResources().getColor(R.color.gray));
@@ -117,32 +173,82 @@ public class AccountSettingsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //TODO: save changes to database
-                if (user_name.getText().toString().trim().isEmpty() || user_phone.getText().toString().trim().isEmpty()) {
-                    user_name.setError("لا يمكن ترك الاسم أو رقم الجوال فارغ");
-                    user_name.requestFocus();
-                } else if (user_name.getText().toString().trim().equalsIgnoreCase(App.USER_NAME)
+                String n_id = String.valueOf(spinnerMap.get(s_neighborhood.getSelectedItemPosition()));
+//                if (user_name.getText().toString().trim().isEmpty() || user_phone.getText().toString().trim().isEmpty()) {
+//                    user_name.setError("لا يمكن ترك الاسم أو رقم الجوال فارغ");
+//                    user_name.requestFocus();
+//                } else
+                if (user_name.getText().toString().trim().equalsIgnoreCase(App.USER_NAME)
+                        && user_phone.getText().toString().trim().equalsIgnoreCase(App.USER_PHONE)
+                        && n_id.equalsIgnoreCase(App.USER_NEIGHBORHOOD)
                         && user_phone.getText().toString().trim().equalsIgnoreCase(App.USER_PHONE)) {
-                    user_name.setError("الرجاء كتابة اسم أو رقم جوال مختلف للحفظ");
+                    user_name.setError("لا يوجد شيء للحفظ");
                     user_name.requestFocus();
 
                 } else if (!isSaudiPhone(user_phone.getText().toString().trim())) {
                     user_phone.setError("الرجاء التأكد من صيغة رقم الجوال");
                     user_phone.requestFocus();
                 } else {
+                    String name;
+                    String phone;
+                    String gender;
+                    String city;
+
+                    if (user_name.getText().toString().trim().length() == 0)
+                        name = null;
+                    else
+                        name = user_name.getText().toString().trim();
+
+
+                    if (user_phone.getText().toString().trim().length() == 0)
+                        phone = null;
+                    else
+                        phone = user_phone.getText().toString().trim();
+
+
+                    if (radio_male.isChecked())
+                        gender = "MALE";
+                    else if (radio_female.isChecked())
+                        gender = "FEMALE";
+                    else if (!radio_male.isChecked() && !radio_female.isChecked())
+                        gender = null;
+                    else
+                        gender = null;
+
+
                     App.confirmMessage = "تأكيد تعديل الملف الشخصي";
                     Intent intent = new Intent(getActivity(), ConfirmGreen.class);
                     startActivity(intent);
-                    updateProfile();
+                    Log.e("name", name + "how");
+                    Log.e("phone", phone + "how");
+                    Log.e("n_id", n_id + "how");
+                    Log.e("gender", gender + "how");
+
+                    updateProfile(name, phone, null, n_id, gender);
 
                 }
 
             }
         });
 
+        s_neighborhood.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getActivity(), String.valueOf(spinnerMap.get(s_neighborhood.getSelectedItemPosition())), Toast.LENGTH_LONG).show();
+
+
+            } // to close the onItemSelected
+
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
         return view;
+
     }
 
-    private void updateProfile() {
+    private void updateProfile(String name, String phone, String city_id, String n_id, String gender) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(UserClient.BASE_URL_USER)
                 //Here we are using the GsonConverterFactory to directly convert json data to object
@@ -150,8 +256,28 @@ public class AccountSettingsFragment extends Fragment {
                 .client(App.okHttpClientCall().build())
                 .build();
 
+        MultipartBody.Builder builder = new MultipartBody.Builder();
+        builder.setType(MultipartBody.FORM);
+        if (name != null)
+            builder.addFormDataPart("name", name);
+
+        if (phone != null)
+            builder.addFormDataPart("phone", phone);
+
+        if (city_id != null)
+            builder.addFormDataPart("city", city_id);
+
+        if (n_id != null)
+            builder.addFormDataPart("neighborhood", n_id);
+
+        if (gender != null)
+            builder.addFormDataPart("gender", gender);
+
+
+        MultipartBody requestBody = builder.build();
+
         UserClient api = retrofit.create(UserClient.class);
-        Call<ResponseBody> call = api.updateProfile(user_name.getText().toString().trim(), user_phone.getText().toString().trim(), "Bearer " + App.token);
+        Call<ResponseBody> call = api.updateProfile(requestBody, "Bearer " + App.token);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -162,11 +288,18 @@ public class AccountSettingsFragment extends Fragment {
                         App.USER_NAME = res.getJSONObject("user_info").getString("name");
                         App.USER_EMAIL = res.getJSONObject("user_info").getString("email");
                         App.USER_PHONE = res.getJSONObject("user_info").getString("phone");
+                        App.USER_NEIGHBORHOOD = res.getJSONObject("user_info").getString("neighborhood_id");
+                        App.USER_GENDER = res.getJSONObject("user_info").getString("gender");
+
 
                         SharedPreferences.Editor editUserInfo = App.sharedPreferences.edit();
                         editUserInfo.putString("name", App.USER_NAME);
                         editUserInfo.putString("email", App.USER_EMAIL);
                         editUserInfo.putString("phone", App.USER_PHONE);
+                        editUserInfo.putString("neighborhood_id", App.USER_NEIGHBORHOOD);
+                        editUserInfo.putString("gender", App.USER_GENDER);
+
+
                         editUserInfo.apply();
                         Intent intent = new Intent(getActivity(), MainNavActivity.class);
                         Toast.makeText(getActivity().getApplicationContext(), "تم تحديث الملف الشخصي بنجاح ", Toast.LENGTH_LONG).show();
@@ -196,5 +329,37 @@ public class AccountSettingsFragment extends Fragment {
     public boolean isSaudiPhone(String text) {
 
         return text.matches("^(009665|9665|\\+9665|05|5)(5|0|3|6|4|9|1|8|7)([0-9]{7})$");
+    }
+
+    public void setNeighborhoods() {
+        resNeighborhoods = App.sharedPreferences.getString("neighborhoodsResponse", null);
+        Type listType = new TypeToken<List<Neighborhood>>() {
+
+        }.getType();
+        neighborhoodList = getNeFromJson(resNeighborhoods, listType);
+        spinnerArray = new String[neighborhoodList.size()];
+        for (int i = 0; i < neighborhoodList.size(); i++) {
+            spinnerMap.put(i, neighborhoodList.get(i).getId());
+            spinnerArray[i] = neighborhoodList.get(i).getName_ar();
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, spinnerArray);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        s_neighborhood.setAdapter(adapter);
+    }
+
+    public static <T> List<T> getNeFromJson(String jsonString, Type type) {
+        if (!isValid(jsonString)) {
+            return null;
+        }
+        return new Gson().fromJson(jsonString, type);
+    }
+
+    public static boolean isValid(String json) {
+        try {
+            new JsonParser().parse(json);
+            return true;
+        } catch (JsonSyntaxException jse) {
+            return false;
+        }
     }
 }

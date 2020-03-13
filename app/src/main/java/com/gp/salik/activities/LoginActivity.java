@@ -117,11 +117,19 @@ public class LoginActivity extends AppCompatActivity {
 
                                     } else if (user.getJSONObject("user_data").getString("phone").isEmpty()) {
                                         App.USER_PHONE = null;
-                                    } else {
+                                    }
+                                    else if (user.getJSONObject("user_data").getString("neighborhood_id").isEmpty()) {
+                                        App.USER_NEIGHBORHOOD = null;
+                                    }
+                                    else if (user.getJSONObject("user_data").getString("gender").isEmpty()) {
+                                        App.USER_GENDER = null;
+                                    }
+                                    else {
                                         App.USER_NAME = user.getJSONObject("user_data").getString("name");
                                         App.USER_EMAIL = user.getJSONObject("user_data").getString("email");
                                         App.USER_PHONE = user.getJSONObject("user_data").getString("phone");
-
+                                        App.USER_NEIGHBORHOOD = user.getJSONObject("user_data").getString("neighborhood_id");
+                                        App.USER_GENDER = user.getJSONObject("user_data").getString("gender");
 
                                     }
 
@@ -130,6 +138,9 @@ public class LoginActivity extends AppCompatActivity {
                                     editUserInfo.putString("name", App.USER_NAME);
                                     editUserInfo.putString("email", App.USER_EMAIL);
                                     editUserInfo.putString("phone", App.USER_PHONE);
+                                    editUserInfo.putString("neighborhood_id", App.USER_NEIGHBORHOOD);
+                                    editUserInfo.putString("gender", App.USER_GENDER);
+
                                     editUserInfo.apply();
 
 

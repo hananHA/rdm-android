@@ -14,6 +14,11 @@ import com.gp.salik.R;
 import com.gp.salik.activities.MainNavActivity;
 import com.gp.salik.activities.TicketDetailsFragment;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.TicketListViewHolder> {
@@ -58,11 +63,34 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
                 v.setBackgroundResource(R.drawable.closed_row_bg);
                 break;
         }
-        holder.ticketInfo.setText(ticket.getDescription()); //String.valueOf(ticket.getId())
+        if (ticket.getDescription().length() > 25) {
+            holder.ticketInfo.setText(ticket.getDescription().substring(0, 25) + "..."); //String.valueOf(ticket.getId())
+
+        } else if (ticket.getDescription().equalsIgnoreCase("null") || ticket.getDescription().isEmpty() || ticket.getDescription() == null) {
+            holder.ticketInfo.setText("لا يوجد وصف للتذكرة");
+
+        } else {
+            holder.ticketInfo.setText(ticket.getDescription());
+        }
+
         holder.status.setText(ticket.getStatus_ar());
-        String date = "التاريخ: " + ticket.getCreated_at().substring(0, 10);
+        String subDate = ticket.getCreated_at().substring(0, 10);
+        String date = "التاريخ: " + subDate;
         holder.date.setText(date);
         holder.ticket_id.setText(String.valueOf(ticket.getId()));
+
+//        try {
+//            Date date = new SimpleDateFormat("yyyy-mm-dd").parse(subDate);
+//
+//            Log.e("date String ", date.toString());
+//            holder.date.setText(dateAr + date);
+//
+//
+//        } catch (Exception e) {
+//            Log.e("error date", e.getMessage());
+//            holder.date.setText(date2);
+//
+//        }
 
 
     }

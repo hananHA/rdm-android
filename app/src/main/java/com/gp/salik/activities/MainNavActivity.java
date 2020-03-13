@@ -12,19 +12,11 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.gson.JsonArray;
 import com.gp.salik.Model.App;
 import com.gp.salik.Model.ViewPagerAdapter;
 import com.gp.salik.R;
-import com.gp.salik.api.TicketClient;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainNavActivity extends AppCompatActivity {
 
@@ -61,7 +53,12 @@ public class MainNavActivity extends AppCompatActivity {
             user_name.setText("");
 
         } else {
-            user_name.setText(App.USER_NAME);
+            String mystring = App.USER_NAME;
+            String arr[] = mystring.split(" ", 2);
+
+            String firstWord = arr[0];   //first name of user
+
+            user_name.setText(firstWord);
         }
 
 
