@@ -13,9 +13,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.JsonArray;
 import com.gp.salik.Model.App;
 import com.gp.salik.R;
 import com.gp.salik.Model.User;
+import com.gp.salik.api.TicketClient;
 import com.gp.salik.api.UserClient;
 
 import org.json.JSONObject;
@@ -117,14 +119,11 @@ public class LoginActivity extends AppCompatActivity {
 
                                     } else if (user.getJSONObject("user_data").getString("phone").isEmpty()) {
                                         App.USER_PHONE = null;
-                                    }
-                                    else if (user.getJSONObject("user_data").getString("neighborhood_id").isEmpty()) {
+                                    } else if (user.getJSONObject("user_data").getString("neighborhood_id").isEmpty()) {
                                         App.USER_NEIGHBORHOOD = null;
-                                    }
-                                    else if (user.getJSONObject("user_data").getString("gender").isEmpty()) {
+                                    } else if (user.getJSONObject("user_data").getString("gender").isEmpty()) {
                                         App.USER_GENDER = null;
-                                    }
-                                    else {
+                                    } else {
                                         App.USER_NAME = user.getJSONObject("user_data").getString("name");
                                         App.USER_EMAIL = user.getJSONObject("user_data").getString("email");
                                         App.USER_PHONE = user.getJSONObject("user_data").getString("phone");
@@ -157,11 +156,11 @@ public class LoginActivity extends AppCompatActivity {
 //                                App.token
 
 
-
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                startActivity(intent);
-                                Toast.makeText(getApplicationContext(), " أهلا بعودتك مرة أخرى ", Toast.LENGTH_LONG).show();
-                                return;
+//                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//                                startActivity(intent);
+//                                Toast.makeText(getApplicationContext(), " أهلا بعودتك مرة أخرى ", Toast.LENGTH_LONG).show();
+//                                return;
+                                getNeighborhoods();
 
 
                             } else {
@@ -225,6 +224,46 @@ public class LoginActivity extends AppCompatActivity {
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
                 finish();
+            }
+        });
+    }
+
+    public void getNeighborhoods() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(TicketClient.BASE_URL)
+                //Here we are using the GsonConverterFactory to directly convert json data to object
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(App.okHttpClientCall().build())
+                .build();
+
+        TicketClient api = retrofit.create(TicketClient.class);
+
+        Call<JsonArray> call = api.getNeighborhoods("Bearer " + App.token);
+
+        call.enqueue(new Callback<JsonArray>() {
+            @Override
+            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+                try {
+                    if (response.isSuccessful()) {
+                        SharedPreferences.Editor editUserInfo = App.sharedPreferences.edit();
+                        editUserInfo.putString("neighborhoodsResponse", response.body().toString());
+                        editUserInfo.apply();
+
+                        Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+                        LoginActivity.this.startActivity(mainIntent);
+                        LoginActivity.this.finish();
+                    }
+                    if (response.code() == 422 || response.code() == 401 || response.code() == 500) {
+                        Log.e("error ", "error code is: " + response.code());
+                    }
+                } catch (Exception e) {
+                    Log.e("error when ", e.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonArray> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "الرجاء التحقق من اتصالك بالإنترنت والمحاولة لاحقا ", Toast.LENGTH_LONG).show();
             }
         });
     }

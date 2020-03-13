@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -30,6 +31,7 @@ import com.gp.salik.R;
 import com.gp.salik.api.TicketClient;
 import com.gp.salik.api.UserClient;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
@@ -52,10 +54,11 @@ public class AccountSettingsFragment extends Fragment {
     private View view;
 
     private EditText user_name, user_email, user_phone;
-    private TextView text_city;
+    private TextView text_city, textN1, textN2, neighborhoodText;
 
     private Button edit_profile, save_changes;
     private RadioButton radio_male, radio_female;
+    public static HashMap<Integer, String> neighborhoodsListMap = new HashMap<Integer, String>();
 
 
     private Spinner s_neighborhood, s_city;
@@ -72,7 +75,7 @@ public class AccountSettingsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.account_settings_fragment, container, false);
 
@@ -92,13 +95,37 @@ public class AccountSettingsFragment extends Fragment {
         s_neighborhood = view.findViewById(R.id.spinner_neighborhood);
         s_city = view.findViewById(R.id.spinner_city);
         text_city = view.findViewById(R.id.text_city);
+        textN1 = view.findViewById(R.id.textN1);
+        textN2 = view.findViewById(R.id.textN2);
+        neighborhoodText = view.findViewById(R.id.neighborhoodText);
+
         // now only change neighborhood
         text_city.setVisibility(View.GONE);
         s_city.setVisibility(View.GONE);
+        //
 
 
         save_changes.setVisibility(View.GONE);
-        setNeighborhoods();
+        try {
+            setNeighborhoods();
+
+        } catch (Exception e) {
+            Log.e("error set nigh", e.getMessage());
+        }
+        if (!App.USER_NEIGHBORHOOD.equalsIgnoreCase("null")) {
+            Log.e("gone", "inside gone");
+            String name_ar_nei = neighborhoodsListMap.get(Integer.parseInt(App.USER_NEIGHBORHOOD));
+            textN1.setVisibility(View.GONE);
+            s_neighborhood.setVisibility(View.GONE);
+            neighborhoodText.setText(name_ar_nei);
+
+
+        } else {
+            Log.e("gone", "not gone");
+            textN2.setVisibility(View.GONE);
+            neighborhoodText.setVisibility(View.GONE);
+        }
+
 
         //TODO: get data from the database
         if (App.USER_NAME == null || App.USER_NAME.equalsIgnoreCase("null")) {
@@ -114,8 +141,10 @@ public class AccountSettingsFragment extends Fragment {
             user_phone.setText(App.USER_PHONE);
 
         }
+        Log.e("user gender", "gender: " + App.USER_GENDER);
 
-        if (App.USER_GENDER == null || App.USER_PHONE.equalsIgnoreCase("null")) {
+        if (App.USER_GENDER == null || App.USER_GENDER.equalsIgnoreCase("null")) {
+            Log.e("iam here", "iam here");
             radio_male.setChecked(false);
             radio_female.setChecked(false);
 
@@ -126,6 +155,8 @@ public class AccountSettingsFragment extends Fragment {
 
 
             } else {
+                Log.e("iam here women", "iam here women");
+
                 radio_male.setChecked(false);
                 radio_female.setChecked(true);
 
@@ -157,6 +188,12 @@ public class AccountSettingsFragment extends Fragment {
                 s_neighborhood.setEnabled(true);
                 radio_male.setEnabled(true);
                 radio_female.setEnabled(true);
+                //
+                textN2.setVisibility(View.GONE);
+                neighborhoodText.setVisibility(View.GONE);
+                textN1.setVisibility(View.VISIBLE);
+                s_neighborhood.setVisibility(View.VISIBLE);
+
 
 //                user_email.setEnabled(true);
 //                user_phone.setEnabled(true);
@@ -185,7 +222,7 @@ public class AccountSettingsFragment extends Fragment {
                     user_name.setError("لا يوجد شيء للحفظ");
                     user_name.requestFocus();
 
-                } else if (!isSaudiPhone(user_phone.getText().toString().trim())) {
+                } else if (!user_name.getText().toString().trim().isEmpty() && !isSaudiPhone(user_phone.getText().toString().trim())) {
                     user_phone.setError("الرجاء التأكد من صيغة رقم الجوال");
                     user_phone.requestFocus();
                 } else {
@@ -227,18 +264,6 @@ public class AccountSettingsFragment extends Fragment {
                     updateProfile(name, phone, null, n_id, gender);
 
                 }
-
-            }
-        });
-
-        s_neighborhood.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getActivity(), String.valueOf(spinnerMap.get(s_neighborhood.getSelectedItemPosition())), Toast.LENGTH_LONG).show();
-
-
-            } // to close the onItemSelected
-
-            public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
@@ -302,7 +327,6 @@ public class AccountSettingsFragment extends Fragment {
 
                         editUserInfo.apply();
                         Intent intent = new Intent(getActivity(), MainNavActivity.class);
-                        Toast.makeText(getActivity().getApplicationContext(), "تم تحديث الملف الشخصي بنجاح ", Toast.LENGTH_LONG).show();
 
                         startActivity(intent);
                         //TODO: when  successfully update profile
@@ -332,7 +356,24 @@ public class AccountSettingsFragment extends Fragment {
     }
 
     public void setNeighborhoods() {
+
         resNeighborhoods = App.sharedPreferences.getString("neighborhoodsResponse", null);
+        try {
+            JSONArray jsonArray = new JSONArray(resNeighborhoods);
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = (jsonArray.getJSONObject(i));
+                int id = Integer.parseInt(jsonObject.getString("id"));
+                String ne_ar = jsonObject.getString("name_ar");
+                neighborhoodsListMap.put(id, ne_ar);
+            }
+
+        } catch (Exception e) {
+            Log.e("erro match ", e.getMessage());
+        }
+
+        Log.e("res of ne", resNeighborhoods);
+
         Type listType = new TypeToken<List<Neighborhood>>() {
 
         }.getType();

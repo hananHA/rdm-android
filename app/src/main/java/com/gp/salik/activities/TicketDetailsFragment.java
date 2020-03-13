@@ -299,7 +299,7 @@ public class TicketDetailsFragment extends Fragment {
 //                        trans.commit();
 
 
-                        Toast.makeText(getActivity().getApplicationContext(), "تم حذف التذكرة بنجاح ", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(getActivity().getApplicationContext(), "تم حذف التذكرة بنجاح ", Toast.LENGTH_LONG).show();
 
 
                     } else {
