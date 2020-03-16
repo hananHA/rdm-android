@@ -1,6 +1,7 @@
 package com.gp.salik.Model;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,11 @@ import com.gp.salik.R;
 import com.gp.salik.activities.MainNavActivity;
 import com.gp.salik.activities.TicketDetailsFragment;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.TicketListViewHolder> {
@@ -46,7 +52,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
         TicketList ticket = ticketLists.get(position);
 
         //binding the data with the viewholder views
-        switch (ticket.getStatus()){
+        switch (ticket.getStatus()) {
             case "OPEN":
                 v.setBackgroundResource(R.drawable.opened_row_bg);
                 break;
@@ -57,10 +63,34 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
                 v.setBackgroundResource(R.drawable.closed_row_bg);
                 break;
         }
-        holder.ticketInfo.setText(ticket.getDescription()); //String.valueOf(ticket.getId())
-        holder.status.setText(ticket.getStatus());
-        holder.date.setText("التصنيف: " + (ticket.getClassification()));
+        if (ticket.getDescription().length() > 25) {
+            holder.ticketInfo.setText(ticket.getDescription().substring(0, 25) + "..."); //String.valueOf(ticket.getId())
+
+        } else if (ticket.getDescription().equalsIgnoreCase("null") || ticket.getDescription().isEmpty() || ticket.getDescription() == null) {
+            holder.ticketInfo.setText("لا يوجد وصف للتذكرة");
+
+        } else {
+            holder.ticketInfo.setText(ticket.getDescription());
+        }
+
+        holder.status.setText(ticket.getStatus_ar());
+        String subDate = ticket.getCreated_at().substring(0, 10);
+        String date = "التاريخ: " + subDate;
+        holder.date.setText(date);
         holder.ticket_id.setText(String.valueOf(ticket.getId()));
+
+//        try {
+//            Date date = new SimpleDateFormat("yyyy-mm-dd").parse(subDate);
+//
+//            Log.e("date String ", date.toString());
+//            holder.date.setText(dateAr + date);
+//
+//
+//        } catch (Exception e) {
+//            Log.e("error date", e.getMessage());
+//            holder.date.setText(date2);
+//
+//        }
 
 
     }
@@ -84,6 +114,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
             status = itemView.findViewById(R.id.ticket_status);
             date = itemView.findViewById(R.id.ticket_date);
             ticket_id = itemView.findViewById(R.id.ticket_id);
+
             ticket_id.setVisibility(View.GONE);
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -91,12 +122,12 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
                 public void onClick(View view) {
                     String id = ticket_id.getText().toString();
                     App.TICKET = id;
-                    if(status.getText().toString().contains("OPEN")) {
+                    if (status.getText().toString().contains("OPEN")) {
                         App.opened = true;
                     } else {
                         App.opened = false;
                     }
-                    FragmentTransaction trans = ((MainNavActivity)mCtx).getSupportFragmentManager()
+                    FragmentTransaction trans = ((MainNavActivity) mCtx).getSupportFragmentManager()
                             .beginTransaction();
                     trans.replace(R.id.root_frame, new TicketDetailsFragment());
                     trans.commit();

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -19,12 +20,15 @@ import com.gp.salik.Model.App;
 import com.gp.salik.Model.ViewPagerAdapter;
 import com.gp.salik.R;
 import com.gp.salik.api.TicketClient;
+import com.gp.salik.api.UserClient;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
 
 public class MainNavActivity extends AppCompatActivity {
 
@@ -61,7 +65,12 @@ public class MainNavActivity extends AppCompatActivity {
             user_name.setText("");
 
         } else {
-            user_name.setText(App.USER_NAME);
+            String mystring = App.USER_NAME;
+            String arr[] = mystring.split(" ", 2);
+
+            String firstWord = arr[0];   //first name of user
+
+            user_name.setText(firstWord);
         }
 
 
@@ -76,7 +85,15 @@ public class MainNavActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 SharedPreferences.Editor editUserInfo = App.sharedPreferences.edit();
-                editUserInfo.putString("token", null);
+                editUserInfo.remove("token");
+                editUserInfo.remove("name");
+                editUserInfo.remove("email");
+                editUserInfo.remove("phone");
+                editUserInfo.remove("neighborhood_id");
+                editUserInfo.remove("gender");
+                editUserInfo.remove("neighborhoodsResponse");
+                editUserInfo.remove("hi");
+                Log.e("all good", "good");
                 editUserInfo.apply();
 
                 // TODO: make sure the activities are all closed
@@ -86,6 +103,7 @@ public class MainNavActivity extends AppCompatActivity {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("EXIT", true);
                 startActivity(intent);
+                logOut();
                 finish();
             }
         });
@@ -93,7 +111,10 @@ public class MainNavActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
                 finish();
+
             }
         });
 
@@ -116,6 +137,44 @@ public class MainNavActivity extends AppCompatActivity {
                 trans.commit();
             }
         });
+    }
+
+
+    private void logOut() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(UserClient.BASE_URL)
+                //Here we are using the GsonConverterFactory to directly convert json data to object
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(App.okHttpClientCall().build())
+                .build();
+
+        UserClient api = retrofit.create(UserClient.class);
+        Call<ResponseBody> call = api.logout("Bearer " + App.token);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    if (response.isSuccessful()) {
+
+                    } else {
+                        if (response.code() == 422 || response.code() == 401 || response.code() == 500 || response.code() == 400) {
+                            Toast.makeText(getApplicationContext(), "الرجاء التحقق من حالة الحساب ", Toast.LENGTH_LONG).show();
+
+
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.e("error when rate ticket", e.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "الرجاء التحقق من الاتصال بالإنترنت ", Toast.LENGTH_LONG).show();
+
+            }
+        });
+
     }
 
 }

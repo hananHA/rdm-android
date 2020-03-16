@@ -76,6 +76,17 @@ public interface TicketClient {
             @Header("Authorization") String auth
     );
 
+    @POST("delete")
+    @FormUrlEncoded
+    @Headers({
+            "Accept: application/json",
+
+    })
+    Call<ResponseBody> deleteTicket(
+
+            @Field("ticket_id") int ticket_id,
+            @Header("Authorization") String auth
+    );
 
 
 }

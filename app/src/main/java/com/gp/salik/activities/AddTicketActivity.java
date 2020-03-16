@@ -78,7 +78,7 @@ public class AddTicketActivity extends Activity {
     int city = 6; // city_id for Makkah is 6 in db;
     String resNeighborhoods;
     String[] spinnerArray;
-    public static List<Neighborhood> neighborhoodList = new ArrayList<>();
+    private static List<Neighborhood> neighborhoodList = new ArrayList<>();
     HashMap<Integer, String> spinnerMap = new HashMap<Integer, String>();
 
     @Override
@@ -136,6 +136,7 @@ public class AddTicketActivity extends Activity {
                     longitude = Double.parseDouble(MainActivity.lng);
                 }
                 if (canSend) {
+                    App.confirmMessage = "تأكيد إضافة التذكرة";
                     Intent intent = new Intent(AddTicketActivity.this, ConfirmGreen.class);
                     startActivity(intent);
                 }
@@ -254,7 +255,6 @@ public class AddTicketActivity extends Activity {
                 if (response.isSuccessful()) {
                     //JSONObject res = new JSONObject(response.body().to());
                     //String message = response.body().toString();
-                    Toast.makeText(getApplicationContext(), "تمت إضافة التذكرة بنجاح !", Toast.LENGTH_LONG).show();
                     listTicket();
                 } else {
                     if (response.code() == 422) {

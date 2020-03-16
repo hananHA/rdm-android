@@ -101,6 +101,7 @@
             android:textColor="@color/light_gray" />
 
         <TextView
+            android:id="@+id/text_city"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="25dp"
@@ -123,6 +124,7 @@
             android:textColor="@color/light_gray" />
 
         <TextView
+            android:id="@+id/textN1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="25dp"
@@ -143,6 +145,33 @@
             android:background="@drawable/edittext_bg"
             android:hint=""
             android:textColor="@color/light_gray" />
+
+        <TextView
+            android:id="@+id/textN2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="@font/ar_font"
+            android:text="الحي:"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
+
+        <TextView
+            android:id="@+id/neighborhoodText"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_gravity="center"
+            android:text="العدل"
+            android:layout_marginBottom="14dp"
+            android:background="@drawable/edittext_bg"
+            android:hint=""
+            android:textColor="@color/light_gray" />
+
+
 
         <!--<TextView
             android:layout_width="wrap_content"

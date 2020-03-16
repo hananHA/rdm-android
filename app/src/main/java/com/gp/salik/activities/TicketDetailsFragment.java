@@ -18,8 +18,10 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.gson.JsonArray;
 import com.gp.salik.Model.App;
 import com.gp.salik.R;
+import com.gp.salik.api.TicketClient;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -28,12 +30,20 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class TicketDetailsFragment extends Fragment {
 
     private View v;
     public static List<JSONObject> ticketHistories = new ArrayList<>();
     public static List<JSONObject> userRating = new ArrayList<>();
-    public static List<ImageView> td_photoList = new ArrayList<>();
+    private static List<ImageView> td_photoList = new ArrayList<>();
+
     private boolean isImageFitToScreen;
 
 
@@ -89,7 +99,10 @@ public class TicketDetailsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //TODO: delete ticket
-                Toast.makeText(getActivity().getApplicationContext(), " كود حذف التذكرة هنا ", Toast.LENGTH_LONG).show();
+                App.confirmMessage = "تأكيد حذف التذكرة";
+                Intent intent = new Intent(getActivity(), ConfirmGreen.class);
+                startActivity(intent);
+                deleteTicket();
             }
         });
 
@@ -116,6 +129,7 @@ public class TicketDetailsFragment extends Fragment {
         return v;
     }
 
+
     private void loadImage() {
         td_photoList.add(0, (ImageView) v.findViewById(R.id.td_photo0));
         td_photoList.add(1, (ImageView) v.findViewById(R.id.td_photo1));
@@ -125,22 +139,28 @@ public class TicketDetailsFragment extends Fragment {
             td_photoList.get(i).setVisibility(View.GONE);
         }
         try {
-
             JSONArray photos = ticket.getJSONArray("photos");
             for (int i = 0; i < photos.length(); i++) {
-                td_photoList.get(i).setVisibility(View.VISIBLE);
+
                 String URL = "http://www.ai-rdm.website/public/storage/photos/";
                 String role_id = ((JSONObject) photos.get(i)).get("role_id").toString();
                 Log.e("role id", role_id);
-                String image_name = ((JSONObject) photos.get(i)).get("photo_name").toString();
-                String full_path = URL + image_name;
-                Picasso.get().load(full_path).into(td_photoList.get(i));
+                if (!role_id.equalsIgnoreCase("1")) {
+                    // this not photo from user (company or employee)
+                } else {
+                    td_photoList.get(i).setVisibility(View.VISIBLE);
+                    String image_name = ((JSONObject) photos.get(i)).get("photo_name").toString();
+                    String full_path = URL + image_name;
+
+                    Picasso.get().load(full_path).into(td_photoList.get(i));
+
+                }
             }
             td_photoList.clear();
 
 
         } catch (Exception e) {
-            Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+            Log.e("load image", e.getMessage());
 
         }
 
@@ -210,7 +230,101 @@ public class TicketDetailsFragment extends Fragment {
     }
 
     private void deleteTicket() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(TicketClient.BASE_URL)
+                //Here we are using the GsonConverterFactory to directly convert json data to object
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(App.okHttpClientCall().build())
+                .build();
 
+        TicketClient api = retrofit.create(TicketClient.class);
+        Call<ResponseBody> call = api.deleteTicket(ticket_id, "Bearer " + App.token);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    if (response.isSuccessful()) {
+                        //TODO: when add rate successfully refresh all ticket list
+                        listTicket();
+
+
+                    } else {
+                        if (response.code() == 422 || response.code() == 401 || response.code() == 500 || response.code() == 400) {
+                            Log.e("error rating ticket ", "error code is: " + response.code() + "ticket_id is: " + ticket_id);
+                            Toast.makeText(getActivity().getApplicationContext(), "الرجاء التحقق من الحساب ", Toast.LENGTH_LONG).show();
+
+                            Intent intent = new Intent(getActivity(), MainNavActivity.class);
+                            startActivity(intent);
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.e("error when rate ticket", e.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getActivity().getApplicationContext(), "الرجاء التحقق من الاتصال بالإنترنت ", Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+    }
+
+    public void listTicket() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(TicketClient.BASE_URL)
+                //Here we are using the GsonConverterFactory to directly convert json data to object
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(App.okHttpClientCall().build())
+                .build();
+
+        TicketClient api = retrofit.create(TicketClient.class);
+        Call<JsonArray> call = api.listTicket("Bearer " + App.token);
+        call.enqueue(new Callback<JsonArray>() {
+            @Override
+            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+                try {
+                    if (response.isSuccessful()) {
+                        App.listTicketResponse = response.body().toString();
+                        JSONArray jsonArray = new JSONArray(response.body().toString());
+                        App.TICKET_NUM = jsonArray.length();
+
+                        Intent intent = new Intent(getActivity(), MainNavActivity.class);
+                        startActivity(intent);
+//                        FragmentTransaction trans = getFragmentManager()
+//                                .beginTransaction();
+//                        trans.replace(R.id.root_frame, new TicketsListFragment());
+//                        trans.commit();
+
+
+//                        Toast.makeText(getActivity().getApplicationContext(), "تم حذف التذكرة بنجاح ", Toast.LENGTH_LONG).show();
+
+
+                    } else {
+                        if (response.code() == 401 || response.code() == 500 || response.code() == 400) {
+
+                            Log.e("error list ticket ", "error code is: " + response.code() + "ticket_id is: " + ticket_id);
+                            Toast.makeText(getActivity().getApplicationContext(), "الرجاء التحقق من الحساب ", Toast.LENGTH_LONG).show();
+
+
+                        }
+                        if (response.code() == 422) {
+                            Toast.makeText(getActivity().getApplicationContext(), "الرجاء التحقق من صيغة رقم الجوال ", Toast.LENGTH_LONG).show();
+
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.e("error when list ticket", e.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonArray> call, Throwable t) {
+                Toast.makeText(getActivity().getApplicationContext(), "الرجاء التحقق من الاتصال بالإنترنت ", Toast.LENGTH_LONG).show();
+
+            }
+        });
     }
 
 
