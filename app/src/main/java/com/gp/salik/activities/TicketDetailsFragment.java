@@ -90,11 +90,6 @@ public class TicketDetailsFragment extends Fragment {
             public void onClick(View view) {
                 //TODO: delete ticket
                 Toast.makeText(getActivity().getApplicationContext(), " كود حذف التذكرة هنا ", Toast.LENGTH_LONG).show();
-
-//                FragmentTransaction trans = getFragmentManager()
-//                        .beginTransaction();
-//                trans.replace(R.id.root_frame, new EvaluateTicketFragment());
-//                trans.commit();
             }
         });
 
@@ -127,7 +122,7 @@ public class TicketDetailsFragment extends Fragment {
         td_photoList.add(2, (ImageView) v.findViewById(R.id.td_photo2));
         td_photoList.add(3, (ImageView) v.findViewById(R.id.td_photo3));
         for (int i = 0; i < td_photoList.size(); i++) {
-            td_photoList.get(i).setVisibility(View.INVISIBLE);
+            td_photoList.get(i).setVisibility(View.GONE);
         }
         try {
 
