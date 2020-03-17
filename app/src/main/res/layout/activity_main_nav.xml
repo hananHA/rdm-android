@@ -90,7 +90,7 @@
             android:textSize="18dp"
             app:fontFamily="@font/ar_font"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.296"
+            app:layout_constraintHorizontal_bias="0.306"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/hello_circle" />
 
@@ -102,12 +102,12 @@
             android:layout_marginLeft="90dp"
             android:layout_marginTop="4dp"
             android:fontFamily="@font/ar_font"
-            android:text="عبدالكريم"
+            android:text="الاسم"
             android:textColor="@color/white"
             android:textSize="18dp"
             app:fontFamily="@font/ar_font"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.491"
+            app:layout_constraintHorizontal_bias="0.485"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/hello_circle" />
 

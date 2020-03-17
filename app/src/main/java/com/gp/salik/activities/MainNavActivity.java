@@ -32,9 +32,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainNavActivity extends AppCompatActivity {
 
-    static ViewPager viewPager;
-    TextView logoutButton, backButton, helloCircle, settingsCircle, ticketsCircle, user_name, tickets_num;
-    static ViewPagerAdapter vpadapter;
+    private ViewPager viewPager;
+    private TextView logoutButton, backButton, settingsCircle, ticketsCircle, user_name, tickets_num;
+    private ViewPagerAdapter vpadapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +51,6 @@ public class MainNavActivity extends AppCompatActivity {
 
         logoutButton = findViewById(R.id.logout_btn);
         backButton = findViewById(R.id.back_to_map);
-        helloCircle = findViewById(R.id.hello_circle);
         settingsCircle = findViewById(R.id.settings_circle);
         ticketsCircle = findViewById(R.id.tickets_circle);
         user_name = findViewById(R.id.user_name);
