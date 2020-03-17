@@ -79,10 +79,10 @@ public class TicketDetailsFragment extends Fragment {
         showEval = v.findViewById(R.id.showEval);
         other_status = v.findViewById(R.id.workInTicket);
 
-        delete_ticket.setVisibility(View.INVISIBLE);
-        eval_ticket.setVisibility(View.INVISIBLE);
-        showEval.setVisibility(View.INVISIBLE);
-        other_status.setVisibility(View.INVISIBLE);
+        delete_ticket.setVisibility(View.GONE);
+        eval_ticket.setVisibility(View.GONE);
+        showEval.setVisibility(View.GONE);
+        other_status.setVisibility(View.GONE);
 
 
         td_desc.setEnabled(false);

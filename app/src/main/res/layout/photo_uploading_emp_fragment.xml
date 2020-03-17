@@ -38,7 +38,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/emp_tphoto1"
+                android:id="@+id/up_photo1"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_marginEnd="20dp"
@@ -48,7 +48,7 @@
                 android:src="@drawable/ic_plus" />
 
             <ImageView
-                android:id="@+id/emp_tphoto0"
+                android:id="@+id/up_photo0"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:background="@drawable/upload_image"
@@ -70,7 +70,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/emp_tphoto3"
+                android:id="@+id/up_photo3"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_marginEnd="20dp"
@@ -80,7 +80,7 @@
                 android:src="@drawable/ic_plus" />
 
             <ImageView
-                android:id="@+id/emp_tphoto2"
+                android:id="@+id/up_photo2"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_marginEnd="6dp"
@@ -94,7 +94,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
-        android:id="@+id/evalTicket"
+        android:id="@+id/closeTicket"
         android:layout_width="match_parent"
         android:layout_height="75dp"
         android:background="@drawable/rounded_green"

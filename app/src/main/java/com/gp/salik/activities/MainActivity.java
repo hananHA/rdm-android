@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         addTicketButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //TODO: if lat and lng are 0s (loc not permitted)
                 Intent intent = new Intent(MainActivity.this, AddTicketActivity.class);
                 startActivity(intent);
             }
