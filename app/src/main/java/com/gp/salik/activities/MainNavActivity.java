@@ -72,6 +72,8 @@ public class MainNavActivity extends AppCompatActivity {
             user_name.setText(firstWord);
         }
 
+        Toast.makeText(getApplicationContext(), "your user", Toast.LENGTH_LONG).show();
+
 
         viewPager.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -91,7 +93,7 @@ public class MainNavActivity extends AppCompatActivity {
                 editUserInfo.remove("neighborhood_id");
                 editUserInfo.remove("gender");
                 editUserInfo.remove("neighborhoodsResponse");
-                editUserInfo.remove("hi");
+                editUserInfo.remove("role_id");
                 Log.e("all good", "good");
                 editUserInfo.apply();
 

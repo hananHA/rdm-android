@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
@@ -16,6 +17,14 @@ import androidx.viewpager.widget.ViewPager;
 import com.gp.salik.Model.App;
 import com.gp.salik.Model.ViewPagerAdapter;
 import com.gp.salik.R;
+import com.gp.salik.api.UserClient;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class EmpMainNavActivity extends AppCompatActivity {
 
@@ -57,6 +66,8 @@ public class EmpMainNavActivity extends AppCompatActivity {
             emp_name.setText(firstWord);
         }
 
+        Toast.makeText(getApplicationContext() , "your emp" , Toast.LENGTH_LONG).show();
+
 
         viewPager.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -69,6 +80,18 @@ public class EmpMainNavActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // TODO: logout
+                SharedPreferences.Editor editUserInfo = App.sharedPreferences.edit();
+                editUserInfo.remove("token");
+                editUserInfo.remove("name");
+                editUserInfo.remove("email");
+                editUserInfo.remove("phone");
+                editUserInfo.remove("neighborhood_id");
+                editUserInfo.remove("gender");
+                editUserInfo.remove("neighborhoodsResponse");
+                editUserInfo.remove("role_id");
+                Log.e("all good", "good");
+                editUserInfo.apply();
+
                 // TODO: make sure the activities are all closed
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -76,6 +99,7 @@ public class EmpMainNavActivity extends AppCompatActivity {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("EXIT", true);
                 startActivity(intent);
+                logOut();
                 finish();
             }
         });
@@ -89,5 +113,43 @@ public class EmpMainNavActivity extends AppCompatActivity {
                 trans.commit();
             }
         });
+    }
+
+
+    private void logOut() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(UserClient.BASE_URL)
+                //Here we are using the GsonConverterFactory to directly convert json data to object
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(App.okHttpClientCall().build())
+                .build();
+
+        UserClient api = retrofit.create(UserClient.class);
+        Call<ResponseBody> call = api.logout("Bearer " + App.token);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    if (response.isSuccessful()) {
+
+                    } else {
+                        if (response.code() == 422 || response.code() == 401 || response.code() == 500 || response.code() == 400) {
+                            Toast.makeText(getApplicationContext(), "الرجاء التحقق من حالة الحساب ", Toast.LENGTH_LONG).show();
+
+
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.e("error when rate ticket", e.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "الرجاء التحقق من الاتصال بالإنترنت ", Toast.LENGTH_LONG).show();
+
+            }
+        });
+
     }
 }

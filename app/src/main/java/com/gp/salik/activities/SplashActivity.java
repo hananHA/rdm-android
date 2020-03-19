@@ -38,6 +38,8 @@ public class SplashActivity extends AppCompatActivity {
         App.USER_EMAIL = App.sharedPreferences.getString("email", null);
         App.USER_PHONE = App.sharedPreferences.getString("phone", null);
         App.USER_GENDER = App.sharedPreferences.getString("gender", null);
+        App.USER_ROLE = App.sharedPreferences.getString("role_id", null);
+
         App.USER_NEIGHBORHOOD = App.sharedPreferences.getString("neighborhood_id", null);
 
 
@@ -125,9 +127,18 @@ public class SplashActivity extends AppCompatActivity {
                         editUserInfo.putString("neighborhoodsResponse", response.body().toString());
                         editUserInfo.apply();
 
-                        Intent mainIntent = new Intent(SplashActivity.this, MainActivity.class);
-                        SplashActivity.this.startActivity(mainIntent);
-                        SplashActivity.this.finish();
+                        if (App.USER_ROLE.equalsIgnoreCase("1")) {
+
+                            Intent mainIntent = new Intent(SplashActivity.this, MainActivity.class);
+                            SplashActivity.this.startActivity(mainIntent);
+                            SplashActivity.this.finish();
+                        } else {
+
+                            Intent mainIntent = new Intent(SplashActivity.this, EmpMainNavActivity.class);
+                            SplashActivity.this.startActivity(mainIntent);
+                            SplashActivity.this.finish();
+                        }
+
                     }
                     if (response.code() == 422 || response.code() == 401 || response.code() == 500) {
                         Log.e("error ", "error code is: " + response.code());

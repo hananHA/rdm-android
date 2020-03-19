@@ -31,6 +31,8 @@ public class App {
 //    public static String USER_CITY = null;
     public static String USER_NEIGHBORHOOD = null;
     public static String USER_GENDER = null;
+    public static String USER_ROLE = null;
+
     public static int TICKET_NUM = 0;
     public static String resNeighborhoods = null;
 

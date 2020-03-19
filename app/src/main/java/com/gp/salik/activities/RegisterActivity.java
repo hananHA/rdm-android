@@ -115,9 +115,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 try {
                                     JSONObject user = new JSONObject(response.body().string());
                                     App.token = user.getString("access_token");
-                                    Log.e("oh good", "not good");
                                     if (user.getJSONObject("user_data").getString("name").isEmpty()) {
-                                        Log.e("hi there", "yes empty");
                                         App.USER_NAME = null;
 
                                     } else if (user.getJSONObject("user_data").getString("email").isEmpty()) {
@@ -129,14 +127,16 @@ public class RegisterActivity extends AppCompatActivity {
                                         App.USER_NEIGHBORHOOD = null;
                                     } else if (user.getJSONObject("user_data").getString("gender").isEmpty()) {
                                         App.USER_GENDER = null;
+                                    } else if (user.getJSONObject("user_data").getString("role_id").isEmpty()) {
+                                        App.USER_ROLE = null;
                                     } else {
-                                        Log.e("hi there", "yes not empty");
-
                                         App.USER_NAME = user.getJSONObject("user_data").getString("name");
                                         App.USER_EMAIL = user.getJSONObject("user_data").getString("email");
                                         App.USER_PHONE = user.getJSONObject("user_data").getString("phone");
                                         App.USER_NEIGHBORHOOD = user.getJSONObject("user_data").getString("neighborhood_id");
                                         App.USER_GENDER = user.getJSONObject("user_data").getString("gender");
+                                        App.USER_ROLE = user.getJSONObject("user_data").getString("role_id");
+
 
                                     }
 
@@ -147,6 +147,8 @@ public class RegisterActivity extends AppCompatActivity {
                                     editUserInfo.putString("phone", App.USER_PHONE);
                                     editUserInfo.putString("neighborhood_id", App.USER_NEIGHBORHOOD);
                                     editUserInfo.putString("gender", App.USER_GENDER);
+                                    editUserInfo.putString("role_id", App.USER_ROLE);
+
 
                                     editUserInfo.apply();
 
@@ -268,10 +270,17 @@ public class RegisterActivity extends AppCompatActivity {
                         SharedPreferences.Editor editUserInfo = App.sharedPreferences.edit();
                         editUserInfo.putString("neighborhoodsResponse", response.body().toString());
                         editUserInfo.apply();
+                        if (App.USER_ROLE.equalsIgnoreCase("1")) {
+                            Intent mainIntent = new Intent(RegisterActivity.this, MainActivity.class);
+                            RegisterActivity.this.startActivity(mainIntent);
+                            RegisterActivity.this.finish();
+                        } else {
+                            Intent mainIntent = new Intent(RegisterActivity.this, EmpMainNavActivity.class);
+                            RegisterActivity.this.startActivity(mainIntent);
+                            RegisterActivity.this.finish();
+                        }
 
-                        Intent mainIntent = new Intent(RegisterActivity.this, MainActivity.class);
-                        RegisterActivity.this.startActivity(mainIntent);
-                        RegisterActivity.this.finish();
+
                     }
                     if (response.code() == 422 || response.code() == 401 || response.code() == 500) {
                         Log.e("error ", "error code is: " + response.code());
