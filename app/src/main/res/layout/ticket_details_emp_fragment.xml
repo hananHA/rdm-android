@@ -144,9 +144,10 @@
 
             <EditText
                 android:id="@+id/emp_tloc"
+                android:autoLink="web"
+                android:focusable="false"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:enabled="false"
                 android:layout_marginTop="335dp"
                 android:layout_marginStart="25dp"
                 android:layout_marginEnd="25dp"
@@ -166,6 +167,20 @@
             android:fontFamily="@font/ar_font"
             android:stateListAnimator="@null"
             android:text="رفع صور الإصلاح"
+            android:textColor="@color/white"
+            android:textSize="30dp"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="655dp"
+            android:layout_alignParentBottom="true"/>
+
+        <Button
+            android:id="@+id/nothingToDo"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:background="@drawable/rounded_green"
+            android:fontFamily="@font/ar_font"
+            android:stateListAnimator="@null"
+            android:text="العودة لقائمة التذاكر"
             android:textColor="@color/white"
             android:textSize="30dp"
             tools:layout_editor_absoluteX="16dp"

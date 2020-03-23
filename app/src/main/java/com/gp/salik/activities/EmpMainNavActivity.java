@@ -71,7 +71,6 @@ public class EmpMainNavActivity extends AppCompatActivity {
             emp_name.setText(firstWord);
         }
 
-        Toast.makeText(getApplicationContext(), "your emp", Toast.LENGTH_LONG).show();
 
 
         viewPager.setOnTouchListener(new View.OnTouchListener() {

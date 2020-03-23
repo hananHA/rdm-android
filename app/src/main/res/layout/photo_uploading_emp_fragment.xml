@@ -91,6 +91,78 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="300dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/ar_font"
+                android:text="حجم الضرر"
+                android:textColor="@color/black"
+                android:textSize="16dp" />
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginBottom="14dp"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radio_high"
+                    android:layout_width="65dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="40dp"
+                    android:layout_marginRight="40dp"
+                    android:layout_weight="0.5"
+                    android:fontFamily="@font/ar_font"
+                    android:text="عالي"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="14dp" />
+
+                <RadioButton
+                    android:id="@+id/radio_medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="40dp"
+                    android:layout_marginRight="40dp"
+                    android:layout_weight="0.5"
+                    android:fontFamily="@font/ar_font"
+                    android:text="متوسط"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="14dp" />
+
+                <RadioButton
+                    android:id="@+id/radio_normal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:fontFamily="@font/ar_font"
+                    android:text="منخفض"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="16dp" />
+
+            </RadioGroup>
+
+        </LinearLayout>
+
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
@@ -106,6 +178,7 @@
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="655dp"
         android:layout_alignParentBottom="true"/>
+
 
 
 </RelativeLayout>

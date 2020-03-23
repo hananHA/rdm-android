@@ -72,7 +72,6 @@ public class MainNavActivity extends AppCompatActivity {
             user_name.setText(firstWord);
         }
 
-        Toast.makeText(getApplicationContext(), "your user", Toast.LENGTH_LONG).show();
 
 
         viewPager.setOnTouchListener(new View.OnTouchListener() {

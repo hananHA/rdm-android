@@ -88,6 +88,17 @@ public interface TicketClient {
             @Header("Authorization") String auth
     );
 
+    @POST("update")
+    @Headers({
+            "Accept: application/json",
+
+    })
+    Call<ResponseBody> updateTicket(
+            @Body RequestBody body,
+            @Header("Authorization") String auth
+    );
+
+
 
 }
 

@@ -63,10 +63,10 @@ public class ConfirmGreen extends Activity {
 
         Handler handler = new Handler();
         int time = 2000;//Millis
-        if (App.confirmMessage.equalsIgnoreCase("تأكيد إضافة التذكرة")) {
+        if (App.confirmMessage.equalsIgnoreCase("تأكيد إضافة التذكرة")
+                || App.confirmMessage.equalsIgnoreCase("تأكيد رفع الصور وإغلاق التذكرة")) {
             time = 1000000;
         }
-
 
         handler.postDelayed(new Runnable() {
             public void run() {
