@@ -45,7 +45,7 @@ public class EmpMainNavActivity extends AppCompatActivity {
             }
         }
 
-        Log.e("roooooolllllleeeee",USER_ROLE);
+        Log.e("roooooolllllleeeee", USER_ROLE);
 
         viewPager = findViewById(R.id.viewpager_emp);
 
@@ -71,7 +71,7 @@ public class EmpMainNavActivity extends AppCompatActivity {
             emp_name.setText(firstWord);
         }
 
-        Toast.makeText(getApplicationContext() , "your emp" , Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "your emp", Toast.LENGTH_LONG).show();
 
 
         viewPager.setOnTouchListener(new View.OnTouchListener() {
@@ -112,6 +112,8 @@ public class EmpMainNavActivity extends AppCompatActivity {
         ticketsCircle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
                 FragmentTransaction trans = getSupportFragmentManager()
                         .beginTransaction();
                 trans.replace(R.id.root_frame, new EmpTicketListFragment());
@@ -157,4 +159,6 @@ public class EmpMainNavActivity extends AppCompatActivity {
         });
 
     }
+
+
 }

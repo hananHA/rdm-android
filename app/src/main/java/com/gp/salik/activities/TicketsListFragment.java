@@ -32,7 +32,7 @@ public class TicketsListFragment extends Fragment {
 
     View v;
     private RecyclerView ticketsRecycler;
-    List<TicketList> ticketListClass;
+    private List<TicketList> ticketListClass;
     TextView hasText;
 
     public TicketsListFragment() {
