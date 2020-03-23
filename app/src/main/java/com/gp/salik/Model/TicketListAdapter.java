@@ -11,6 +11,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gp.salik.R;
+import com.gp.salik.activities.EmpMainNavActivity;
+import com.gp.salik.activities.EmpTicketDetailsFragment;
 import com.gp.salik.activities.MainNavActivity;
 import com.gp.salik.activities.TicketDetailsFragment;
 
@@ -20,6 +22,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+
+import static com.gp.salik.Model.App.USER_ROLE;
 
 public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.TicketListViewHolder> {
 
@@ -127,10 +131,17 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
                     } else {
                         App.opened = false;
                     }
-                    FragmentTransaction trans = ((MainNavActivity) mCtx).getSupportFragmentManager()
-                            .beginTransaction();
-                    trans.replace(R.id.root_frame, new TicketDetailsFragment());
-                    trans.commit();
+                    if(USER_ROLE.equals("4")) {
+                        FragmentTransaction trans = ((EmpMainNavActivity) mCtx).getSupportFragmentManager()
+                                .beginTransaction();
+                        trans.replace(R.id.root_frame, new EmpTicketDetailsFragment());
+                        trans.commit();
+                    } else {
+                        FragmentTransaction trans = ((MainNavActivity) mCtx).getSupportFragmentManager()
+                                .beginTransaction();
+                        trans.replace(R.id.root_frame, new TicketDetailsFragment());
+                        trans.commit();
+                    }
                 }
             });
 

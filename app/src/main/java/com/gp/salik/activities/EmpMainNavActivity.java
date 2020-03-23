@@ -26,6 +26,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.gp.salik.Model.App.USER_ROLE;
+
 public class EmpMainNavActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
@@ -43,6 +45,10 @@ public class EmpMainNavActivity extends AppCompatActivity {
             }
         }
 
+        Log.e("roooooolllllleeeee",USER_ROLE);
+
+        viewPager = findViewById(R.id.viewpager_emp);
+
         vpadapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         logoutCircle = findViewById(R.id.logout_circle);
@@ -51,7 +57,6 @@ public class EmpMainNavActivity extends AppCompatActivity {
         emp_tickets_num = findViewById(R.id.emp_tickets_num);
         emp_tickets_num.setText(String.valueOf(App.TICKET_NUM));
 
-        viewPager = findViewById(R.id.viewpager);
         viewPager.setAdapter(vpadapter);
 
         if (App.USER_NAME == null || App.USER_NAME.equalsIgnoreCase("null")) {

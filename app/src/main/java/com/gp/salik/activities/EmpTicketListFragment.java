@@ -41,7 +41,6 @@ public class EmpTicketListFragment extends Fragment {
         hasTicket = v.findViewById(R.id.hasTicket_emp);
         hasTicket.setVisibility(View.GONE);
 
-
         ticketsRecycler = v.findViewById(R.id.recyclerTickets_emp);
 
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
